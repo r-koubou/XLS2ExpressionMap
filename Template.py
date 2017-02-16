@@ -1,3 +1,5 @@
+# encoding: utf8
+
 # MIT License
 #
 # Copyright (c) 2017 R-Koubou
@@ -20,10 +22,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+#-------------------------------------------------------------
+# File header/footer
+#-------------------------------------------------------------
+
 XML_HEADER = """<?xml version="1.0" encoding="utf-8"?>
 <InstrumentMap>
-<string name="name" value="VHG Mono (Main)" wide="true"/>
-"""
+<string name="name" value="{name}" wide="true"/>"""
 
 XML_FOOTER = """   <member name="controller">
       <int name="ownership" value="1"/>
@@ -31,8 +36,11 @@ XML_FOOTER = """   <member name="controller">
 </InstrumentMap>
 """
 
+#-------------------------------------------------------------
+# Key switch
+#-------------------------------------------------------------
 
-SLOTS_HEADER = """
+KEY_SWITCH_HEADER = """
    <member name="slots">
       <int name="ownership" value="1"/>
       <list name="obj" type="obj">
@@ -40,10 +48,9 @@ SLOTS_HEADER = """
             <obj class="PSlotThruTrigger" name="remote" ID="{uuid2}">
                <int name="status" value="144"/>
                <int name="data1" value="-1"/>
-            </obj>
-"""
+            </obj>"""
 
-PSlotMidiAction = """
+KEY_SWITCH = """
             <obj class="PSlotMidiAction" name="action" ID="{uuid1}">
                <int name="version" value="600"/>
                <member name="noteChanger">
@@ -67,7 +74,7 @@ PSlotMidiAction = """
                      <obj class="POutputEvent" ID="{uuid3}">
                         <int name="status" value="144"/>
                         <int name="data1" value="{note}"/>
-                        <int name="data2" value="120"/>
+                        <int name="data2" value="{vel}"/>
                      </obj>
                   </list>
                </member>
@@ -81,27 +88,57 @@ PSlotMidiAction = """
                <int name="minPitch" value="0"/>
                <int name="key" value="0"/>
             </obj>
-            <member name="sv">
-               <int name="ownership" value="2"/>
-            </member>
+{articulations}
             <member name="name">
                <string name="s" value="{name}" wide="true"/>
             </member>
-            <int name="color" value="{color}"/>
+            <int name="color" value="1"/>"""
 
+ARTICULATION_IN_SLOT_HEADER = """
+            <member name="sv">
+               <int name="ownership" value="2"/>
+               <list name="obj" type="obj">
+"""
+
+ARTICULATION_IN_SLOT = """
+                  <obj class="USlotVisuals" ID="{uuid1}">
+                     <int name="displaytype" value="1"/>
+                     <int name="articulationtype" value="1"/>
+                     <int name="symbol" value="73"/>
+                     <string name="text" value="{name}" wide="true"/>
+                     <string name="description" value="{name}" wide="true"/>
+                     <int name="group" value="0"/>
+               </obj>"""
+
+ARTICULATION_IN_SLOT_FOOTER = """
+               </list>
+            </member>
 """
 
 SLOTS_FOOTER = """
          </obj>
+      </list>
+   </member>
 """
+#-------------------------------------------------------------
+# Articulation
+#-------------------------------------------------------------
+
+ARTICULATION_HEADER = """
+   <member name="slotvisuals">
+      <int name="ownership" value="1"/>
+      <list name="obj" type="obj">"""
 
 ARTICULATION = """
-         <obj class="USlotVisuals" ID="{uuid}">
+         <obj class="USlotVisuals" ID="{uuid1}">
             <int name="displaytype" value="1"/>
             <int name="articulationtype" value="1"/>
             <int name="symbol" value="73"/>
             <string name="text" value="{name}" wide="true"/>
             <string name="description" value="{name}" wide="true"/>
             <int name="group" value="0"/>
-         </obj>
-"""
+         </obj>"""
+
+ARTICULATION_FOOTER = """
+      </list>
+   </member>"""

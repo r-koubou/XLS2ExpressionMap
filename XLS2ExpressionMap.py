@@ -1,4 +1,4 @@
-# -*- encoding: UTF-8 -*-
+# encoding: utf-8
 
 # MIT License
 #
@@ -22,21 +22,120 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+#-------------------
 # built in libs
+#-------------------
+import os
 import sys
 import uuid
 
+#-------------------
 # 3rd party libs
+#-------------------
+# http://pypi.python.org/pypi/xlrd
 import xlrd
 
+#-------------------
 # my scripts
+#-------------------
+import Constants
 import Template
+import XLSUtil
 
 def createUUID():
-      return uuid.uuid4().fields[ 0 ]
+    return uuid.uuid4().fields[ 0 ]
+
+def createUUIDList( listSize ):
+    ret = [0] * listSize
+    for i in range( listSize ):
+          ret[ i ] = uuid.uuid4().fields[ 0 ]
+
+    return ret
+
+def genArticulation( sheet ):
+    rowLength = sheet.nrows
+
+    ret = Template.ARTICULATION_HEADER
+
+    for row in range( 1, rowLength ):
+
+        name = XLSUtil.getCellFromColmnName( sheet, row, "Name" ).value.strip()
+
+        if( len( name ) == 0 ):
+            break
+
+        ret += Template.ARTICULATION.format(
+            uuid1 = createUUID(),
+            name  = name
+        )
+
+    ret += Template.ARTICULATION_FOOTER
+    return ret
+
+def genKeySwitch( sheet ):
+    rowLength = sheet.nrows
+
+    ret = Template.KEY_SWITCH_HEADER.format(
+        uuid1 = createUUID(),
+        uuid2 = createUUID()
+    )
+
+    for row in range( 1, rowLength ):
+        name            = XLSUtil.getCellFromColmnName( sheet, row, "Name" ).value.strip()
+        noteNo          = XLSUtil.getCellFromColmnName( sheet, row, "MIDI Note" ).value.strip()
+        articulation    = XLSUtil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
+        vel             = XLSUtil.getCellFromColmnName( sheet, row, "Velocity" ).value
+        vel             = int( vel ) # float to int
+
+        if( len( name ) == 0 or len( noteNo ) == 0 or len( articulation ) == 0 ):
+            break
+
+        if( noteNo in Constants.NOTENUMBER ):
+            noteNo = Constants.NOTENUMBER.index( noteNo ) # to integer format (0-127)
+        else:
+            noteNo = -1
+
+        if( len( articulation ) > 0 ):
+            tmp = ""
+            tmp += Template.ARTICULATION_IN_SLOT_HEADER
+            tmp += Template.ARTICULATION_IN_SLOT.format(
+                uuid1 = createUUID(), name = articulation
+            )
+            tmp += Template.ARTICULATION_IN_SLOT_FOOTER
+            articulation = tmp
+        else:
+            articulation = ""
+
+        ret += Template.KEY_SWITCH.format(
+            uuid1 = createUUID(),
+            uuid2 = createUUID(),
+            uuid3 = createUUID(),
+            name  = name,
+            note  = noteNo,
+            vel   = vel,
+            articulations = articulation
+        )
+
+    ret += Template.SLOTS_FOOTER
+    return ret
 
 def main():
-      None
+    xlsFilePath = sys.argv[ 1 ]
+    book              = xlrd.open_workbook( xlsFilePath )
+    keySwitchSheet    = book.sheet_by_index( 0 )
+    articulationSheet = book.sheet_by_index( 1 )
+
+    expressionMapName = os.path.splitext( xlsFilePath )[ 0 ]
+    outputFileName    = expressionMapName + ".expressionmap"
+
+    fp = open( outputFileName, "wb" )
+
+    fp.write( Template.XML_HEADER.format( name = expressionMapName ).encode( "utf-8" ) )
+    fp.write( genArticulation( articulationSheet ).encode( "utf-8" ) )
+    fp.write( genKeySwitch( keySwitchSheet ).encode( "utf-8" ) )
+    fp.write( Template.XML_FOOTER.encode( "utf-8" ) )
+
+    fp.close()
 
 if __name__ == '__main__':
-      main()
+    main()

@@ -101,6 +101,8 @@ def genKeySwitch( sheet ):
         if( len( name ) == 0 ):
             break
 
+        print( "Slot: {name}".format( name = name ) )
+
         if( len( noteNo ) > 0 and noteNo in Constants.NOTENUMBER ):
             noteNo = Constants.NOTENUMBER.index( noteNo ) # to integer format (0-127)
         else:
@@ -131,6 +133,8 @@ def genKeySwitch( sheet ):
         ret += Template.KEY_SWITCH.format(
             uuid1 = createUUID(),
             uuid2 = createUUID(),
+            uuid3 = createUUID(),
+            uuid4 = createUUID(),
             midimessage = midimessage,
             name  = name,
             color = color,

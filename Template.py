@@ -44,20 +44,20 @@ XML_FOOTER = """   <member name="controller">
 KEY_SWITCH_HEADER = """
    <member name="slots">
       <int name="ownership" value="1"/>
-      <list name="obj" type="obj">
+      <list name="obj" type="obj">"""
+
+KEY_SWITCH = """
          <obj class="PSoundSlot" ID="{uuid1}">
             <obj class="PSlotThruTrigger" name="remote" ID="{uuid2}">
                <int name="status" value="144"/>
                <int name="data1" value="-1"/>
-            </obj>"""
-
-KEY_SWITCH = """
-            <obj class="PSlotMidiAction" name="action" ID="{uuid1}">
+            </obj>
+            <obj class="PSlotMidiAction" name="action" ID="{uuid3}">
                <int name="version" value="600"/>
                <member name="noteChanger">
                   <int name="ownership" value="1"/>
                   <list name="obj" type="obj">
-                     <obj class="PSlotNoteChanger" ID="{uuid2}">
+                     <obj class="PSlotNoteChanger" ID="{uuid4}">
                         <int name="channel" value="-1"/>
                         <float name="velocityFact" value="1"/>
                         <float name="lengthFact" value="1"/>
@@ -82,12 +82,12 @@ KEY_SWITCH = """
             </obj>
 {articulations}
             <member name="name">
-               <string name="s" value="{name}" wide="true"/>
+            <string name="s" value="{name}" wide="true"/>
             </member>
-            <int name="color" value="{color}"/>"""
+            <int name="color" value="{color}"/>
+         </obj>"""
 
-MIDI_MESSAGE_IN_KEYSWITCH = """
-               <member name="midiMessages">
+MIDI_MESSAGE_IN_KEYSWITCH = """               <member name="midiMessages">
                   <int name="ownership" value="1"/>
                   <list name="obj" type="obj">
                      <obj class="POutputEvent" ID="{uuid1}">
@@ -96,11 +96,9 @@ MIDI_MESSAGE_IN_KEYSWITCH = """
                         <int name="data2" value="{vel}"/>
                      </obj>
                   </list>
-               </member>
-"""
+               </member>"""
 
-EMPTY_MIDI_MESSAGE_IN_KEYSWITCH = """
-               <member name="midiMessages">
+EMPTY_MIDI_MESSAGE_IN_KEYSWITCH = """               <member name="midiMessages">
                   <int name="ownership" value="1"/>
                </member>"""
 
@@ -124,7 +122,6 @@ ARTICULATION_IN_SLOT_FOOTER = """
             </member>"""
 
 SLOTS_FOOTER = """
-         </obj>
       </list>
    </member>
 """

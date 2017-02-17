@@ -52,6 +52,12 @@ def createUUIDList( listSize ):
 
     return ret
 
+def float2int( v, defaultValue = 0 ):
+    if( isinstance( v, float ) ):
+        return int( v )
+    else:
+        return defaultValue
+
 def genArticulation( sheet ):
     rowLength = sheet.nrows
 
@@ -85,16 +91,23 @@ def genKeySwitch( sheet ):
         noteNo          = XLSUtil.getCellFromColmnName( sheet, row, "MIDI Note" ).value.strip()
         articulation    = XLSUtil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
         vel             = XLSUtil.getCellFromColmnName( sheet, row, "Velocity" ).value
-        vel             = int( vel ) # float to int
+        color           = XLSUtil.getCellFromColmnName( sheet, row, "Color" ).value
 
-        if( len( name ) == 0 or len( noteNo ) == 0 or len( articulation ) == 0 ):
+        # float to int saferty
+        vel   = float2int( vel )
+        color = float2int( color )
+
+        # Fail check
+        if( len( name ) == 0 or len( articulation ) == 0 ):
             break
 
-        if( noteNo in Constants.NOTENUMBER ):
+        if( len( noteNo ) > 0 and noteNo in Constants.NOTENUMBER ):
             noteNo = Constants.NOTENUMBER.index( noteNo ) # to integer format (0-127)
         else:
             noteNo = -1
+            vel    = 0
 
+        # Append articulation
         if( len( articulation ) > 0 ):
             tmp = ""
             tmp += Template.ARTICULATION_IN_SLOT_HEADER
@@ -106,20 +119,45 @@ def genKeySwitch( sheet ):
         else:
             articulation = ""
 
+        # Append MIDI message( Note On )
+        midimessage = Template.EMPTY_MIDI_MESSAGE_IN_KEYSWITCH
+        if( noteNo >= 0 ):
+            midimessage = Template.MIDI_MESSAGE_IN_KEYSWITCH.format(
+                uuid1 = createUUID(),
+                note  = noteNo,
+                vel   = vel
+            )
+
         ret += Template.KEY_SWITCH.format(
             uuid1 = createUUID(),
             uuid2 = createUUID(),
-            uuid3 = createUUID(),
+            midimessage = midimessage,
             name  = name,
-            note  = noteNo,
-            vel   = vel,
+            color = color,
             articulations = articulation
         )
 
     ret += Template.SLOTS_FOOTER
     return ret
 
+def usage():
+    print(
+"""---------------------
+  XLS2ExpressionMap
+  2017 (c) R-Koubou
+---------------------
+usage:
+    python XLS2ExpressionMap.py <input file>
+    <input file>: xlsx file path
+        """
+    )
+
 def main():
+
+    if( len( sys.argv ) < 2 ):
+        usage()
+        return
+
     xlsFilePath = sys.argv[ 1 ]
     book              = xlrd.open_workbook( xlsFilePath )
     keySwitchSheet    = book.sheet_by_index( 0 )
@@ -136,6 +174,9 @@ def main():
     fp.write( Template.XML_FOOTER.encode( "utf-8" ) )
 
     fp.close()
+    print( "{name}.expressionmap created.".format(
+        name = expressionMapName
+    ))
 
 if __name__ == '__main__':
     main()

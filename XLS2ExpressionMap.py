@@ -98,7 +98,7 @@ def genKeySwitch( sheet ):
         color = float2int( color )
 
         # Fail check
-        if( len( name ) == 0 or len( articulation ) == 0 ):
+        if( len( name ) == 0 ):
             break
 
         if( len( noteNo ) > 0 and noteNo in Constants.NOTENUMBER ):

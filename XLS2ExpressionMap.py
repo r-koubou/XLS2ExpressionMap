@@ -65,13 +65,19 @@ def genArticulation( sheet ):
 
     for row in range( 1, rowLength ):
 
-        name = XLSUtil.getCellFromColmnName( sheet, row, "Name" ).value.strip()
+        name     = XLSUtil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
+        artiType = XLSUtil.getCellFromColmnName( sheet, row, "Articulation Type" ).value.strip()
 
-        if( len( name ) == 0 ):
-            break
+        if( len( name ) == 0 or len( artiType ) == 0 ):
+            continue
+
+        print( "[Articulation] {name}, Type={type}".format( name = name, type = artiType ) )
+
+        artiType = Constants.ARTICULATION_TYPE.index( artiType ) # to integer format ( 0: Attribute 1: Direction).
 
         ret += Template.ARTICULATION.format(
             uuid1 = createUUID(),
+            type  = artiType,
             name  = name
         )
 
@@ -88,26 +94,36 @@ def genKeySwitch( sheet ):
 
     for row in range( 1, rowLength ):
         name            = XLSUtil.getCellFromColmnName( sheet, row, "Name" ).value.strip()
-        noteNo          = XLSUtil.getCellFromColmnName( sheet, row, "MIDI Note" ).value.strip()
         articulation    = XLSUtil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
-        vel             = XLSUtil.getCellFromColmnName( sheet, row, "Velocity" ).value
         color           = XLSUtil.getCellFromColmnName( sheet, row, "Color" ).value
+        noteNo          = XLSUtil.getCellFromColmnName( sheet, row, "MIDI Note" ).value.strip()
+        vel             = XLSUtil.getCellFromColmnName( sheet, row, "Velocity" ).value
+        ccNo            = XLSUtil.getCellFromColmnName( sheet, row, "CC No." ).value
+        ccValue         = XLSUtil.getCellFromColmnName( sheet, row, "CC Value" ).value
 
         # float to int saferty
-        vel   = float2int( vel )
-        color = float2int( color )
+        vel     = float2int( vel )
+        color   = float2int( color )
+        ccNo    = float2int( ccNo, -1 )
+        ccValue = float2int( ccValue, -1 )
 
         # Fail check
         if( len( name ) == 0 ):
             break
 
-        print( "Slot: {name}".format( name = name ) )
+        print( "[Slot] {name}".format( name = name ) )
 
+        # MIDI Message check( Note On )
         if( len( noteNo ) > 0 and noteNo in Constants.NOTENUMBER ):
             noteNo = Constants.NOTENUMBER.index( noteNo ) # to integer format (0-127)
         else:
             noteNo = -1
             vel    = 0
+
+        # MIDI Message check( CC )
+        if( ccNo < 0 or ccValue < 0 ):
+            ccNo    = -1
+            ccValue = -1
 
         # Append articulation
         if( len( articulation ) > 0 ):
@@ -121,14 +137,26 @@ def genKeySwitch( sheet ):
         else:
             articulation = ""
 
-        # Append MIDI message( Note On )
-        midimessage = Template.EMPTY_MIDI_MESSAGE_IN_KEYSWITCH
-        if( noteNo >= 0 ):
-            midimessage = Template.MIDI_MESSAGE_IN_KEYSWITCH.format(
-                uuid1 = createUUID(),
-                note  = noteNo,
-                vel   = vel
-            )
+        # Append MIDI message( Note On / CC )
+        if( noteNo < 0 and ccNo < 0 ):
+            midimessage = Template.EMPTY_MIDI_MESSAGE_IN_KEYSWITCH
+        else:
+            midimessage = Template.MIDI_MESSAGE_IN_KEYSWITCH_HEADER
+            if( noteNo >= 0 ):
+                midimessage += Template.MIDI_MESSAGE_IN_KEYSWITCH.format(
+                    uuid1 = createUUID(),
+                    midiMessage = 144,
+                    data1       = noteNo,
+                    data2       = vel
+                )
+            if( ccNo >= 0 ):
+                midimessage += Template.MIDI_MESSAGE_IN_KEYSWITCH.format(
+                    uuid1 = createUUID(),
+                    midiMessage = 176,
+                    data1       = ccNo,
+                    data2       = ccValue
+                )
+            midimessage += Template.MIDI_MESSAGE_IN_KEYSWITCH_FOOTER
 
         ret += Template.KEY_SWITCH.format(
             uuid1 = createUUID(),
@@ -164,23 +192,31 @@ def main():
 
     xlsFilePath = sys.argv[ 1 ]
     book              = xlrd.open_workbook( xlsFilePath )
-    keySwitchSheet    = book.sheet_by_index( 0 )
-    articulationSheet = book.sheet_by_index( 1 )
 
-    expressionMapName = os.path.splitext( xlsFilePath )[ 0 ]
-    outputFileName    = expressionMapName + ".expressionmap"
+    for sheet in book.sheets():
 
-    fp = open( outputFileName, "wb" )
+        # Ignore sheet
+        if( sheet.name == "DO NOT MODIFY!" ):
+            continue
 
-    fp.write( Template.XML_HEADER.format( name = expressionMapName ).encode( "utf-8" ) )
-    fp.write( genArticulation( articulationSheet ).encode( "utf-8" ) )
-    fp.write( genKeySwitch( keySwitchSheet ).encode( "utf-8" ) )
-    fp.write( Template.XML_FOOTER.encode( "utf-8" ) )
+        expressionMapName = sheet.name
+        outputFileName    = expressionMapName + ".expressionmap"
 
-    fp.close()
-    print( "{name}.expressionmap created.".format(
-        name = expressionMapName
-    ))
+        print( "Creating: {name}".format( name = outputFileName ) )
+        fp = open( outputFileName, "wb" )
+
+        fp.write( Template.XML_HEADER.format( name = expressionMapName ).encode( "utf-8" ) )
+        fp.write( genArticulation( sheet ).encode( "utf-8" ) )
+        fp.write( genKeySwitch( sheet ).encode( "utf-8" ) )
+        fp.write( Template.XML_FOOTER.encode( "utf-8" ) )
+
+        fp.close()
+
+        print( "{name} created.".format(
+            name = outputFileName
+        ))
+        print( "--------------------------------------------" )
+
 
 if __name__ == '__main__':
     main()

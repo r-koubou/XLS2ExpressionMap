@@ -152,3 +152,8 @@ NOTENUMBER =[
     "126:F#8",
     "127:G8",
 ]
+
+ARTICULATION_TYPE = [
+    "Attribute",
+    "Direction",
+]

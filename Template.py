@@ -87,16 +87,22 @@ KEY_SWITCH = """
             <int name="color" value="{color}"/>
          </obj>"""
 
-MIDI_MESSAGE_IN_KEYSWITCH = """               <member name="midiMessages">
+MIDI_MESSAGE_IN_KEYSWITCH_HEADER ="""               <member name="midiMessages">
                   <int name="ownership" value="1"/>
                   <list name="obj" type="obj">
-                     <obj class="POutputEvent" ID="{uuid1}">
-                        <int name="status" value="144"/>
-                        <int name="data1" value="{note}"/>
-                        <int name="data2" value="{vel}"/>
-                     </obj>
+"""
+
+MIDI_MESSAGE_IN_KEYSWITCH_FOOTER ="""
                   </list>
                </member>"""
+
+
+MIDI_MESSAGE_IN_KEYSWITCH = """                     <obj class="POutputEvent" ID="{uuid1}">
+                        <int name="status" value="{midiMessage}"/>
+                        <int name="data1" value="{data1}"/>
+                        <int name="data2" value="{data2}"/>
+                     </obj>
+"""
 
 EMPTY_MIDI_MESSAGE_IN_KEYSWITCH = """               <member name="midiMessages">
                   <int name="ownership" value="1"/>
@@ -132,11 +138,12 @@ SLOTS_FOOTER = """
 ARTICULATION_HEADER = """
    <member name="slotvisuals">
       <int name="ownership" value="1"/>
-      <list name="obj" type="obj">"""
+      <list name="obj" type="obj">
+"""
 
 ARTICULATION = """         <obj class="USlotVisuals" ID="{uuid1}">
             <int name="displaytype" value="1"/>
-            <int name="articulationtype" value="1"/>
+            <int name="articulationtype" value="{type}"/>
             <int name="symbol" value="73"/>
             <string name="text" value="{name}" wide="true"/>
             <string name="description" value="{name}" wide="true"/>

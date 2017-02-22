@@ -90,5 +90,9 @@ ENV/
 
 
 # User
+*.bak
 *.org
 *.expressionmap
+~$*.xlsx
+Temp/
+Work/

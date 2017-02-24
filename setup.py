@@ -6,6 +6,6 @@ from cx_Freeze import setup, Executable
 exe = Executable (script = 'XLS2ExpressionMap.py', base = None)
 
 setup(  name = 'XLS2ExpressionMap',
-        version = '0.0.2',
+        version = '0.0.4',
         description = 'Excel file(*.xlsx) to Cubase Expression Map file converter',
         executables = [exe] )

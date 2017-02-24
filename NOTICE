@@ -1,0 +1,24 @@
+This project depends following softwares.
+
+#-------------------------------------------------------------------------------
+# python 3.6.x
+#-------------------------------------------------------------------------------
+https://www.python.org/
+
+#-------------------------------------------------------------------------------
+# xlrd
+#-------------------------------------------------------------------------------
+Library for developers to extract data from Microsoft Excel (tm) spreadsheet files
+https://pypi.python.org/pypi/xlrd
+
+An installation example:
+$ pip install xlrd
+
+#-------------------------------------------------------------------------------
+# cx_Freeze
+#-------------------------------------------------------------------------------
+create standalone executables from Python scripts
+https://pypi.python.org/pypi/cx_Freeze
+
+An installation example:
+$ pip install cx_Freeze

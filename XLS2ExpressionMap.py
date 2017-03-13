@@ -58,6 +58,21 @@ def float2int( v, defaultValue = 0 ):
     else:
         return defaultValue
 
+def getGroupValue( sheet, row ):
+    group = XLSUtil.getCellFromColmnName( sheet, row, "Group" )
+
+    # Since v0.0.5: Colmn "Group" check (+backward compatibility)
+    if( group != None and hasattr( group, "value" ) ):
+        # float to int saferty
+        group   = float2int( group.value ) - 1
+
+        if( group < 0 ):
+            group = 0
+    else:
+        group = 0
+
+    return group
+
 def genArticulation( sheet ):
     rowLength = sheet.nrows
 
@@ -67,18 +82,25 @@ def genArticulation( sheet ):
 
         name     = XLSUtil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
         artiType = XLSUtil.getCellFromColmnName( sheet, row, "Articulation Type" ).value.strip()
+        group    = getGroupValue( sheet, row )
 
+        # Must be required values to generate
         if( len( name ) == 0 or len( artiType ) == 0 ):
             continue
 
-        print( "[Articulation] {name}, Type={type}".format( name = name, type = artiType ) )
+        print( "[Articulation] {name}, Type={type}, Group={group}".format(
+            name = name,
+            type = artiType,
+            group = group
+        ))
 
         artiType = Constants.ARTICULATION_TYPE.index( artiType ) # to integer format ( 0: Attribute 1: Direction).
 
         ret += Template.ARTICULATION.format(
             uuid1 = createUUID(),
             type  = artiType,
-            name  = name
+            name  = name,
+            group = group
         )
 
     ret += Template.ARTICULATION_FOOTER
@@ -96,6 +118,7 @@ def genKeySwitch( sheet ):
         name            = XLSUtil.getCellFromColmnName( sheet, row, "Name" ).value.strip()
         articulation    = XLSUtil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
         color           = XLSUtil.getCellFromColmnName( sheet, row, "Color" ).value
+        group           = getGroupValue( sheet, row )
         noteNo          = XLSUtil.getCellFromColmnName( sheet, row, "MIDI Note" ).value.strip()
         vel             = XLSUtil.getCellFromColmnName( sheet, row, "Velocity" ).value
         ccNo            = XLSUtil.getCellFromColmnName( sheet, row, "CC No." ).value
@@ -130,7 +153,8 @@ def genKeySwitch( sheet ):
             tmp = ""
             tmp += Template.ARTICULATION_IN_SLOT_HEADER
             tmp += Template.ARTICULATION_IN_SLOT.format(
-                uuid1 = createUUID(), name = articulation
+                uuid1 = createUUID(), name = articulation,
+                group = group
             )
             tmp += Template.ARTICULATION_IN_SLOT_FOOTER
             articulation = tmp

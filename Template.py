@@ -120,7 +120,7 @@ ARTICULATION_IN_SLOT = """                  <obj class="USlotVisuals" ID="{uuid1
                      <int name="symbol" value="73"/>
                      <string name="text" value="{name}" wide="true"/>
                      <string name="description" value="{name}" wide="true"/>
-                     <int name="group" value="0"/>
+                     <int name="group" value="{group}"/>
                </obj>"""
 
 ARTICULATION_IN_SLOT_FOOTER = """
@@ -147,7 +147,7 @@ ARTICULATION = """         <obj class="USlotVisuals" ID="{uuid1}">
             <int name="symbol" value="73"/>
             <string name="text" value="{name}" wide="true"/>
             <string name="description" value="{name}" wide="true"/>
-            <int name="group" value="0"/>
+            <int name="group" value="{group}"/>
          </obj>"""
 
 ARTICULATION_FOOTER = """

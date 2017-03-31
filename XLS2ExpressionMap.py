@@ -28,6 +28,7 @@
 import os
 import sys
 import uuid
+import html
 
 #-------------------
 # 3rd party libs
@@ -99,7 +100,7 @@ def genArticulation( sheet ):
         ret += Template.ARTICULATION.format(
             uuid1 = createUUID(),
             type  = artiType,
-            name  = name,
+            name  = html.escape( name ),
             group = group
         )
 
@@ -188,7 +189,7 @@ def genKeySwitch( sheet ):
             uuid3 = createUUID(),
             uuid4 = createUUID(),
             midimessage = midimessage,
-            name  = name,
+            name  = html.escape( name ),
             color = color,
             articulations = articulation
         )

@@ -2,29 +2,6 @@
 
 # Convert from Cubase expression map data to csv format for XLS2ExpressionMap
 
-
-# MIT License
-#
-# Copyright (c) 2017 R-Koubou
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 import re
 import sys
 import html
@@ -32,7 +9,7 @@ import itertools
 
 from xml.etree import ElementTree
 
-import Constants
+from xls2expressionmap import constants
 
 CSV_FORMAT = "{name}\t{color}\t{articulation}\t{articulationType}\t{group}\t{midiNoteNo}\t{velocity}\t{ccNo}\t{ccValue}"
 
@@ -86,7 +63,7 @@ def parseArticulationInfo( elem, csv ):
     csv.group             = int( group.get( "value" ) ) + 1
     csv.color             = color.get( "value" )
     csv.articulationName  = p.name
-    csv.articulationType  = Constants.ARTICULATION_TYPE[ int( articulationType.get("value") ) ]
+    csv.articulationType  = constants.ARTICULATION_TYPE[ int( articulationType.get("value") ) ]
 
 def parseMidiEventInfo( elem, csv ):
 # MIDI Event
@@ -124,7 +101,7 @@ def parseMidiEventInfo( elem, csv ):
 
     if midiStatus.get( "value" ) == "144":
         # Note On
-        p.midiNoteNo = Constants.NOTENUMBER[ int( midiData1.get( "value" ) ) ]
+        p.midiNoteNo = constants.NOTENUMBER[ int( midiData1.get( "value" ) ) ]
         p.velocity   = midiData2.get( "value" )
         pass
     else:

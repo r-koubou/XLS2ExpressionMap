@@ -1,27 +1,5 @@
 # encoding: utf-8
 
-# MIT License
-#
-# Copyright (c) 2017 R-Koubou
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 #-------------------
 # built in libs
 #-------------------
@@ -39,9 +17,9 @@ import xlrd
 #-------------------
 # my scripts
 #-------------------
-import Constants
-import Template
-import XLSUtil
+import xls2expressionmap.constants
+from xls2expressionmap.expressionmap import template
+from xls2expressionmap.xlsx import xlsutil
 
 def createUUID():
     return uuid.uuid4().fields[ 0 ]
@@ -60,7 +38,7 @@ def float2int( v, defaultValue = 0 ):
         return defaultValue
 
 def getGroupValue( sheet, row ):
-    group = XLSUtil.getCellFromColmnName( sheet, row, "Group" )
+    group = xlsutil.getCellFromColmnName( sheet, row, "Group" )
 
     # Since v0.0.5: Colmn "Group" check (+backward compatibility)
     if( group != None and hasattr( group, "value" ) ):
@@ -77,12 +55,12 @@ def getGroupValue( sheet, row ):
 def genArticulation( sheet ):
     rowLength = sheet.nrows
 
-    ret = Template.ARTICULATION_HEADER
+    ret = template.ARTICULATION_HEADER
 
     for row in range( 1, rowLength ):
 
-        name     = XLSUtil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
-        artiType = XLSUtil.getCellFromColmnName( sheet, row, "Articulation Type" ).value.strip()
+        name     = xlsutil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
+        artiType = xlsutil.getCellFromColmnName( sheet, row, "Articulation Type" ).value.strip()
         group    = getGroupValue( sheet, row )
 
         # Must be required values to generate
@@ -95,35 +73,35 @@ def genArticulation( sheet ):
             group = group
         ))
 
-        artiType = Constants.ARTICULATION_TYPE.index( artiType ) # to integer format ( 0: Attribute 1: Direction).
+        artiType = constants.ARTICULATION_TYPE.index( artiType ) # to integer format ( 0: Attribute 1: Direction).
 
-        ret += Template.ARTICULATION.format(
+        ret += template.ARTICULATION.format(
             uuid1 = createUUID(),
             type  = artiType,
             name  = html.escape( name ),
             group = group
         )
 
-    ret += Template.ARTICULATION_FOOTER
+    ret += template.ARTICULATION_FOOTER
     return ret
 
 def genKeySwitch( sheet ):
     rowLength = sheet.nrows
 
-    ret = Template.KEY_SWITCH_HEADER.format(
+    ret = template.KEY_SWITCH_HEADER.format(
         uuid1 = createUUID(),
         uuid2 = createUUID()
     )
 
     for row in range( 1, rowLength ):
-        name            = XLSUtil.getCellFromColmnName( sheet, row, "Name" ).value.strip()
-        articulation    = XLSUtil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
-        color           = XLSUtil.getCellFromColmnName( sheet, row, "Color" ).value
+        name            = xlsutil.getCellFromColmnName( sheet, row, "Name" ).value.strip()
+        articulation    = xlsutil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
+        color           = xlsutil.getCellFromColmnName( sheet, row, "Color" ).value
         group           = getGroupValue( sheet, row )
-        noteNo          = XLSUtil.getCellFromColmnName( sheet, row, "MIDI Note" ).value.strip()
-        vel             = XLSUtil.getCellFromColmnName( sheet, row, "Velocity" ).value
-        ccNo            = XLSUtil.getCellFromColmnName( sheet, row, "CC No." ).value
-        ccValue         = XLSUtil.getCellFromColmnName( sheet, row, "CC Value" ).value
+        noteNo          = xlsutil.getCellFromColmnName( sheet, row, "MIDI Note" ).value.strip()
+        vel             = xlsutil.getCellFromColmnName( sheet, row, "Velocity" ).value
+        ccNo            = xlsutil.getCellFromColmnName( sheet, row, "CC No." ).value
+        ccValue         = xlsutil.getCellFromColmnName( sheet, row, "CC Value" ).value
 
         # float to int saferty
         vel     = float2int( vel )
@@ -138,8 +116,8 @@ def genKeySwitch( sheet ):
         print( "[Slot] {name}".format( name = name ) )
 
         # MIDI Message check( Note On )
-        if( len( noteNo ) > 0 and noteNo in Constants.NOTENUMBER ):
-            noteNo = Constants.NOTENUMBER.index( noteNo ) # to integer format (0-127)
+        if( len( noteNo ) > 0 and noteNo in constants.NOTENUMBER ):
+            noteNo = constants.NOTENUMBER.index( noteNo ) # to integer format (0-127)
         else:
             noteNo = -1
             vel    = 0
@@ -152,38 +130,38 @@ def genKeySwitch( sheet ):
         # Append articulation
         if( len( articulation ) > 0 ):
             tmp = ""
-            tmp += Template.ARTICULATION_IN_SLOT_HEADER
-            tmp += Template.ARTICULATION_IN_SLOT.format(
+            tmp += template.ARTICULATION_IN_SLOT_HEADER
+            tmp += template.ARTICULATION_IN_SLOT.format(
                 uuid1 = createUUID(), name = articulation,
                 group = group
             )
-            tmp += Template.ARTICULATION_IN_SLOT_FOOTER
+            tmp += template.ARTICULATION_IN_SLOT_FOOTER
             articulation = tmp
         else:
             articulation = ""
 
         # Append MIDI message( Note On / CC )
         if( noteNo < 0 and ccNo < 0 ):
-            midimessage = Template.EMPTY_MIDI_MESSAGE_IN_KEYSWITCH
+            midimessage = template.EMPTY_MIDI_MESSAGE_IN_KEYSWITCH
         else:
-            midimessage = Template.MIDI_MESSAGE_IN_KEYSWITCH_HEADER
+            midimessage = template.MIDI_MESSAGE_IN_KEYSWITCH_HEADER
             if( noteNo >= 0 ):
-                midimessage += Template.MIDI_MESSAGE_IN_KEYSWITCH.format(
+                midimessage += template.MIDI_MESSAGE_IN_KEYSWITCH.format(
                     uuid1 = createUUID(),
                     midiMessage = 144,
                     data1       = noteNo,
                     data2       = vel
                 )
             if( ccNo >= 0 ):
-                midimessage += Template.MIDI_MESSAGE_IN_KEYSWITCH.format(
+                midimessage += template.MIDI_MESSAGE_IN_KEYSWITCH.format(
                     uuid1 = createUUID(),
                     midiMessage = 176,
                     data1       = ccNo,
                     data2       = ccValue
                 )
-            midimessage += Template.MIDI_MESSAGE_IN_KEYSWITCH_FOOTER
+            midimessage += template.MIDI_MESSAGE_IN_KEYSWITCH_FOOTER
 
-        ret += Template.KEY_SWITCH.format(
+        ret += template.KEY_SWITCH.format(
             uuid1 = createUUID(),
             uuid2 = createUUID(),
             uuid3 = createUUID(),
@@ -194,7 +172,7 @@ def genKeySwitch( sheet ):
             articulations = articulation
         )
 
-    ret += Template.SLOTS_FOOTER
+    ret += template.SLOTS_FOOTER
     return ret
 
 def usage():
@@ -230,10 +208,10 @@ def main():
         print( "Creating: {name}".format( name = outputFileName ) )
         fp = open( outputFileName, "wb" )
 
-        fp.write( Template.XML_HEADER.format( name = expressionMapName ).encode( "utf-8" ) )
+        fp.write( template.XML_HEADER.format( name = expressionMapName ).encode( "utf-8" ) )
         fp.write( genArticulation( sheet ).encode( "utf-8" ) )
         fp.write( genKeySwitch( sheet ).encode( "utf-8" ) )
-        fp.write( Template.XML_FOOTER.encode( "utf-8" ) )
+        fp.write( template.XML_FOOTER.encode( "utf-8" ) )
 
         fp.close()
 

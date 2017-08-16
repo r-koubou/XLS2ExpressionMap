@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-# http://pypi.python.org/pypi/xlrd
-import xlrd
+# https://pypi.python.org/pypi/openpyxl
+import openpyxl
 
 from ..util import util
 
@@ -21,12 +21,16 @@ Get a Cell from given sheet instanse and row index and cell string value of Row 
 def getCellFromColmnName( sheet, rowIndex, colmnName ):
 
     colmnName = colmnName
+    maxColumn =  sheet.max_column
 
-    for c in range( sheet.ncols ):
-        cell = sheet.cell( 0, c )
+    for c in range( 1, maxColumn ):
+        cell = sheet.cell( row = 1, column = c )
         name = cell.value
         if( name == colmnName ):
-            return sheet.cell( rowIndex, c )
+            cell = sheet.cell( row = rowIndex, column = c )
+            if cell.value == None:
+                return ""
+            return cell.value
 
     return ""
 

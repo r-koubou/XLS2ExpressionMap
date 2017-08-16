@@ -12,12 +12,12 @@ import html
 # 3rd party libs
 #-------------------
 # http://pypi.python.org/pypi/xlrd
-import xlrd
+import openpyxl
 
 #-------------------
 # my scripts
 #-------------------
-import xls2expressionmap.constants
+from xls2expressionmap import constants
 from xls2expressionmap.expressionmap import template
 from xls2expressionmap.xlsx import xlsutil
 
@@ -53,14 +53,20 @@ def getGroupValue( sheet, row ):
     return group
 
 def genArticulation( sheet ):
-    rowLength = sheet.nrows
+    rowLength = sheet.max_row
 
     ret = template.ARTICULATION_HEADER
 
-    for row in range( 1, rowLength ):
+    for row in range( 2, rowLength ):
 
-        name     = xlsutil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
-        artiType = xlsutil.getCellFromColmnName( sheet, row, "Articulation Type" ).value.strip()
+        name = xlsutil.getCellFromColmnName( sheet, row, "Articulation" )
+
+        if len( name ) == 0:
+            break
+
+        name = name.strip()
+
+        artiType = xlsutil.getCellFromColmnName( sheet, row, "Articulation Type" )
         group    = getGroupValue( sheet, row )
 
         # Must be required values to generate
@@ -86,22 +92,24 @@ def genArticulation( sheet ):
     return ret
 
 def genKeySwitch( sheet ):
-    rowLength = sheet.nrows
+    rowLength = sheet.max_row
 
     ret = template.KEY_SWITCH_HEADER.format(
         uuid1 = createUUID(),
         uuid2 = createUUID()
     )
 
-    for row in range( 1, rowLength ):
-        name            = xlsutil.getCellFromColmnName( sheet, row, "Name" ).value.strip()
-        articulation    = xlsutil.getCellFromColmnName( sheet, row, "Articulation" ).value.strip()
-        color           = xlsutil.getCellFromColmnName( sheet, row, "Color" ).value
+    for row in range( 2, rowLength ):
+        name  = xlsutil.getCellFromColmnName( sheet, row, "Name" )
+        if len( name ) == 0:
+            break
+        articulation    = xlsutil.getCellFromColmnName( sheet, row, "Articulation" )
+        color           = xlsutil.getCellFromColmnName( sheet, row, "Color" )
         group           = getGroupValue( sheet, row )
-        noteNo          = xlsutil.getCellFromColmnName( sheet, row, "MIDI Note" ).value.strip()
-        vel             = xlsutil.getCellFromColmnName( sheet, row, "Velocity" ).value
-        ccNo            = xlsutil.getCellFromColmnName( sheet, row, "CC No." ).value
-        ccValue         = xlsutil.getCellFromColmnName( sheet, row, "CC Value" ).value
+        noteNo          = xlsutil.getCellFromColmnName( sheet, row, "MIDI Note" )
+        vel             = xlsutil.getCellFromColmnName( sheet, row, "Velocity" )
+        ccNo            = xlsutil.getCellFromColmnName( sheet, row, "CC No." )
+        ccValue         = xlsutil.getCellFromColmnName( sheet, row, "CC Value" )
 
         # float to int saferty
         vel     = float2int( vel )
@@ -194,15 +202,17 @@ def main():
         return
 
     xlsFilePath = sys.argv[ 1 ]
-    book              = xlrd.open_workbook( xlsFilePath )
+    book = openpyxl.load_workbook( filename = xlsFilePath, read_only = True )
 
-    for sheet in book.sheets():
+    for sheetName in book.sheetnames:
+
+        sheet = book[ sheetName ]
 
         # Ignore sheet
-        if( sheet.name == "DO NOT MODIFY!" ):
+        if( sheetName == "DO NOT MODIFY!" ):
             continue
 
-        expressionMapName = sheet.name
+        expressionMapName = sheetName
         outputFileName    = expressionMapName + ".expressionmap"
 
         print( "Creating: {name}".format( name = outputFileName ) )

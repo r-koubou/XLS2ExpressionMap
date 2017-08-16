@@ -10,8 +10,8 @@ import html
 #-------------------
 # 3rd party modules
 #-------------------
-# http://pypi.python.org/pypi/xlrd
-import xlrd
+# https://pypi.python.org/pypi/openpyxl
+import openpyxl
 
 #-------------------
 # My Script
@@ -27,7 +27,7 @@ class Xls2ExpressionMap:
     """
     def __init__( self, xlsxFileName, outputDir = '.' ):
         self.xlsxFileName = xlsxFileName
-        self.book         = xlrd.open_workbook( xlsxFileName )
+        self.book         = openpyxl.load_workbook( xlsxFileName )
         self.outputDir    = outputDir
 
     """

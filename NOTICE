@@ -1,4 +1,5 @@
-This project depends following softwares.
+This software depends following libraries to work.
+See also requiments.txt.
 
 #-------------------------------------------------------------------------------
 # python 3.6.x
@@ -6,19 +7,10 @@ This project depends following softwares.
 https://www.python.org/
 
 #-------------------------------------------------------------------------------
-# xlrd
+# openpyxl
 #-------------------------------------------------------------------------------
-Library for developers to extract data from Microsoft Excel (tm) spreadsheet files
-https://pypi.python.org/pypi/xlrd
+openpyxl is a Python library to read/write Excel 2010 xlsx/xlsm/xltx/xltm files.
+https://pypi.python.org/pypi/openpyxl
 
 An installation example:
-$ pip install xlrd
-
-#-------------------------------------------------------------------------------
-# cx_Freeze
-#-------------------------------------------------------------------------------
-create standalone executables from Python scripts
-https://pypi.python.org/pypi/cx_Freeze
-
-An installation example:
-$ pip install cx_Freeze
+$ pip install openpyxl

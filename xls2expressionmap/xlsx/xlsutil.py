@@ -8,7 +8,7 @@ from ..util import util
 """
 Get a Cell array from given sheet instanse and cell string value of Row 1.
 """
-def getRowsFromComnName( sheet, colmnName ):
+def getRowsFromColumnName( sheet, colmnName ):
     for c in range( sheet.ncols ):
         name = sheet.cell( 0, c ).strip()
         if( name == colmnName ):
@@ -18,7 +18,7 @@ def getRowsFromComnName( sheet, colmnName ):
 """
 Get a Cell from given sheet instanse and row index and cell string value of Row 1.
 """
-def getCellFromColmnName( sheet, rowIndex, colmnName ):
+def getValueFromColumnName( sheet, rowIndex, colmnName, defaultValue = None ):
 
     colmnName = colmnName
     maxColumn =  sheet.max_column
@@ -29,22 +29,7 @@ def getCellFromColmnName( sheet, rowIndex, colmnName ):
         if( name == colmnName ):
             cell = sheet.cell( row = rowIndex, column = c )
             if cell.value == None:
-                return ""
+                return defaultValue
             return cell.value
 
-    return ""
-
-def getGroupValue( sheet, row ):
-    group = getCellFromColmnName( sheet, row, "Group" )
-
-    # Since v0.0.5: Colmn "Group" check (+backward compatibility)
-    if( group != None and hasattr( group, "value" ) ):
-        # float to int saferty
-        group = util.float2int( group.value ) - 1
-
-        if( group < 0 ):
-            group = 0
-    else:
-        group = 0
-
-    return group
+    return defaultValue

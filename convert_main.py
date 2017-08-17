@@ -1,56 +1,11 @@
 # encoding: utf-8
 
-#-------------------
-# built in libs
-#-------------------
-import os
 import sys
-import uuid
-import html
 
-#-------------------
-# 3rd party libs
-#-------------------
-# http://pypi.python.org/pypi/xlrd
-import openpyxl
-
-#-------------------
-# my scripts
-#-------------------
 from xls2expressionmap import constants
+from xls2expressionmap import convert
 from xls2expressionmap.expressionmap import template
 from xls2expressionmap.xlsx import xlsutil
-
-def createUUID():
-    return uuid.uuid4().fields[ 0 ]
-
-def createUUIDList( listSize ):
-    ret = [0] * listSize
-    for i in range( listSize ):
-          ret[ i ] = uuid.uuid4().fields[ 0 ]
-
-    return ret
-
-def float2int( v, defaultValue = 0 ):
-    if( isinstance( v, float ) ):
-        return int( v )
-    else:
-        return defaultValue
-
-def getGroupValue( sheet, row ):
-    group = xlsutil.getCellFromColmnName( sheet, row, "Group" )
-
-    # Since v0.0.5: Colmn "Group" check (+backward compatibility)
-    if( group != None and hasattr( group, "value" ) ):
-        # float to int saferty
-        group   = float2int( group.value ) - 1
-
-        if( group < 0 ):
-            group = 0
-    else:
-        group = 0
-
-    return group
 
 def genArticulation( sheet ):
     rowLength = sheet.max_row
@@ -59,14 +14,14 @@ def genArticulation( sheet ):
 
     for row in range( 2, rowLength ):
 
-        name = xlsutil.getCellFromColmnName( sheet, row, "Articulation" )
+        name = xlsutil.getValueFromColumnName( sheet, row, "Articulation" )
 
         if len( name ) == 0:
             break
 
         name = name.strip()
 
-        artiType = xlsutil.getCellFromColmnName( sheet, row, "Articulation Type" )
+        artiType = xlsutil.getValueFromColumnName( sheet, row, "Articulation Type" )
         group    = getGroupValue( sheet, row )
 
         # Must be required values to generate
@@ -100,16 +55,16 @@ def genKeySwitch( sheet ):
     )
 
     for row in range( 2, rowLength ):
-        name  = xlsutil.getCellFromColmnName( sheet, row, "Name" )
+        name  = xlsutil.getValueFromColumnName( sheet, row, "Name" )
         if len( name ) == 0:
             break
-        articulation    = xlsutil.getCellFromColmnName( sheet, row, "Articulation" )
-        color           = xlsutil.getCellFromColmnName( sheet, row, "Color" )
+        articulation    = xlsutil.getValueFromColumnName( sheet, row, "Articulation" )
+        color           = xlsutil.getValueFromColumnName( sheet, row, "Color" )
         group           = getGroupValue( sheet, row )
-        noteNo          = xlsutil.getCellFromColmnName( sheet, row, "MIDI Note" )
-        vel             = xlsutil.getCellFromColmnName( sheet, row, "Velocity" )
-        ccNo            = xlsutil.getCellFromColmnName( sheet, row, "CC No." )
-        ccValue         = xlsutil.getCellFromColmnName( sheet, row, "CC Value" )
+        noteNo          = xlsutil.getValueFromColumnName( sheet, row, "MIDI Note" )
+        vel             = xlsutil.getValueFromColumnName( sheet, row, "Velocity" )
+        ccNo            = xlsutil.getValueFromColumnName( sheet, row, "CC No." )
+        ccValue         = xlsutil.getValueFromColumnName( sheet, row, "CC Value" )
 
         # float to int saferty
         vel     = float2int( vel )
@@ -232,4 +187,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    #main()
+    from xls2expressionmap import convert
+    p = convert.XLS2ExpressionMap( xlsxFileName = sys.argv[ 1 ] )
+    p.convert()

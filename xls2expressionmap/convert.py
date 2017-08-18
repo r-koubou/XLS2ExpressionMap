@@ -192,8 +192,6 @@ class XLS2ExpressionMap:
             #   CC No1 ... CC No1+n
             #   CC Value1 ... CC Value1+n
             ccList = []
-            midiMessageXml = ""
-
             for i in range( 1, INT_MAX ):
                 ccNo    = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_CC + str( i ) )
                 ccValue = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_CC_VALUE + str( i ) )

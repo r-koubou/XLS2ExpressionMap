@@ -46,6 +46,17 @@ class MIDICc:
         return self.ccNo >= 1 and self.ccValue >= 0
 
 """
+MIDI PC information
+"""
+class MIDIPc:
+    def __init__( self, lsb = -1, msb = -1 ):
+        self.lsb = lsb
+        self.msb = msb
+
+    def valid( self ):
+        return self.lsb >= 0 and self.msb >= 0 and self.lsb <= 255 and self.msb <= 255
+
+"""
 Convert to xlsx file to Cubase *.expressionmap.
 """
 class XLS2ExpressionMap:
@@ -99,27 +110,38 @@ class XLS2ExpressionMap:
         return ret
 
     """
-    Generate velocity xml string from given sheet, row index, MIDINote instance.
+    Generate velocity xml string from given data
     """
-    def generateMIDINote( self, rowIndex, noteObj ):
+    def generateMIDINote( self, note ):
 
         return template.MIDI_MESSAGE_IN_KEYSWITCH.format(
                     uuid1       = util.createUUID(),
                     midiMessage = 144,
-                    data1       = noteObj.noteNo,
-                    data2       = noteObj.velocity
+                    data1       = note.noteNo,
+                    data2       = note.velocity
         )
 
     """
-    Generate MIDI CC xml string from given sheet and index(1-based. if multiple, set index>1 ), rowIndex index
+    Generate MIDI CC xml string from given data
     """
-    def generateCC( self, rowIndex, cc ):
+    def generateCC( self, cc ):
 
         return template.MIDI_MESSAGE_IN_KEYSWITCH.format(
                     uuid1       = util.createUUID(),
                     midiMessage = 176,
                     data1       = cc.ccNo,
                     data2       = cc.ccValue
+        )
+
+    """
+    Generate MIDI Program change message xml string from given data
+    """
+    def generatePC( self, pc ):
+        return template.MIDI_MESSAGE_IN_KEYSWITCH.format(
+                    uuid1       = util.createUUID(),
+                    midiMessage = 192,
+                    data1       = pc.lsb,
+                    data2       = pc.msb
         )
 
     """
@@ -163,7 +185,6 @@ class XLS2ExpressionMap:
             #   MIDI Note1 ... MIDI Note1+n
             #   Velocity1 ... Velocity1+n
             midiNoteList = []
-            midiMessageXml = ""
             for i in range( 1, INT_MAX ):
                 noteNo = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_NOTE + str( i ) )
                 vel    = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_VELOCITY + str( i ) )
@@ -174,17 +195,8 @@ class XLS2ExpressionMap:
                     noteNo = constants.NOTENUMBER.index( noteNo ) # to integer format (0-127)
 
                 obj = MIDINote( noteNo, vel )
-                if obj.valid:
+                if obj.valid():
                     midiNoteList.append( obj )
-
-            if len( midiNoteList ) > 0:
-
-                midiMessageXml += template.MIDI_MESSAGE_IN_KEYSWITCH_HEADER
-
-                for n in midiNoteList:
-                    midiMessageXml += self.generateMIDINote( rowIndex, n )
-
-                midiMessageXml += template.MIDI_MESSAGE_IN_KEYSWITCH_FOOTER
 
             # Append MIDI CC
             # * Multiple MIDI CC Supported
@@ -199,17 +211,49 @@ class XLS2ExpressionMap:
                     break
 
                 obj = MIDICc( ccNo, ccValue )
-                if obj.valid:
+                if obj.valid():
                     ccList.append( obj )
 
-            if len( ccList ) > 0:
+            # Append MIDI PC
+            # * Multiple MIDI Program Change Supported
+            # * Column name format:
+            #   PC LSB1 ... PC LSB1+n
+            #   PC MSB1 ... PC MSB1+n (MSB not exist, MSB value will be 0 )
+            programChangeList = []
+            for i in range( 1, INT_MAX ):
+                lsb = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_PC_LSB + str( i ) )
+                msb = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_PC_MSB + str( i ) )
+
+                if lsb == None:
+                    break
+                elif msb == None:
+                    # msb is not set
+                    msb = 0
+
+                obj = MIDIPc( lsb, msb )
+                if obj.valid():
+                    programChangeList.append( obj )
+
+            # Generate MIDI message xml node
+            midiMessageXml = ""
+            if len( midiNoteList ) > 0 or len( ccList ) > 0 or len( programChangeList ) > 0:
 
                 midiMessageXml += template.MIDI_MESSAGE_IN_KEYSWITCH_HEADER
 
+                # MIDI Note
+                for n in midiNoteList:
+                    midiMessageXml += self.generateMIDINote( n )
+
+                # MIDI CC
                 for cc in ccList:
-                    midiMessageXml += self.generateCC( rowIndex, cc )
+                    midiMessageXml  += self.generateCC( cc )
+
+                # MIDI PC
+                for pc in programChangeList:
+                    midiMessageXml += self.generatePC( pc )
 
                 midiMessageXml += template.MIDI_MESSAGE_IN_KEYSWITCH_FOOTER
+
 
             # Generate Keyswitch XML text
             ret += template.KEY_SWITCH.format(

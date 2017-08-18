@@ -11,6 +11,8 @@ COLUMN_MIDI_NOTE            = "MIDI Note"
 COLUMN_MIDI_VELOCITY        = "Velocity"
 COLUMN_MIDI_CC              = "CC No"
 COLUMN_MIDI_CC_VALUE        = "CC Value"
+COLUMN_MIDI_PC_LSB          = "PC LSB"
+COLUMN_MIDI_PC_MSB          = "PC MSB"
 
 # List definition sheet name
 LIST_DEFINITION_SHEETNAME   = "DO NOT MODIFY!"

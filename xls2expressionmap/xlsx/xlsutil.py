@@ -18,15 +18,12 @@ def getRowsFromColumnName( sheet, colmnName ):
 """
 Get a Cell from given sheet instanse and row index and cell string value of Row 1.
 """
-def getValueFromColumnName( sheet, rowIndex, colmnName, defaultValue = None ):
+def getValueFromColumnName( sheet, rowIndex, columnName, defaultValue = None ):
 
-    colmnName = colmnName
-    maxColumn =  sheet.max_column
-
-    for c in range( 1, maxColumn ):
+    for c in range( 1, sheet.max_column + 1 ):
         cell = sheet.cell( row = 1, column = c )
         name = cell.value
-        if( name == colmnName ):
+        if( name == columnName ):
             cell = sheet.cell( row = rowIndex, column = c )
             if cell.value == None:
                 return defaultValue

@@ -65,6 +65,11 @@ KEY_SWITCH = """
             <int name="color" value="{color}"/>
          </obj>"""
 
+INT_TAG_IN_KEYSWITCH                = """               <int name="{name} value="{value}">\n"""
+INT_MIDI_CC_NUM_TAG_IN_KEYSWITCH    = """               <int name="controller{ccNo}num" value="{ccNo}">\n"""
+INT_MIDI_CC_VALUE_TAG_IN_KEYSWITCH  = """               <int name="controller{ccNo}value" value="{ccValue}">\n"""
+INT_MIDI_PC_TAG_IN_KEYSWITCH        = """               <int name="program" value="{value}">\n"""
+
 MIDI_MESSAGE_IN_KEYSWITCH_HEADER ="""               <member name="midiMessages">
                   <int name="ownership" value="1"/>
                   <list name="obj" type="obj">

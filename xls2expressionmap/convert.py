@@ -117,10 +117,7 @@ class XLS2ExpressionMap:
     """
     def generateKeySwitch( self, sheet ):
 
-        ret = template.KEY_SWITCH_HEADER.format(
-            uuid1 = util.createUUID(),
-            uuid2 = util.createUUID()
-        )
+        ret = template.KEY_SWITCH_HEADER
 
         for rowIndex in range( constants.START_ROW_INEDX, sheet.max_row ):
 
@@ -221,6 +218,8 @@ class XLS2ExpressionMap:
                     midiMessageXml += self.generatePC( pc )
 
                 midiMessageXml += template.MIDI_MESSAGE_IN_KEYSWITCH_FOOTER
+            else:
+                midiMessageXml = template.EMPTY_MIDI_MESSAGE_IN_KEYSWITCH
 
 
             # Generate Keyswitch XML text
@@ -235,6 +234,7 @@ class XLS2ExpressionMap:
                 articulations = articulation
             )
 
+        ret += template.SLOTS_FOOTER
         return ret
 
     """
@@ -255,6 +255,7 @@ class XLS2ExpressionMap:
             xmlText  = template.XML_HEADER.format( name = expressionMapName )
             xmlText += self.generateArticulation( sheet )
             xmlText += self.generateKeySwitch( sheet )
+            xmlText += template.XML_FOOTER
 
             xmlText = xmlText.encode( 'utf8' )
 

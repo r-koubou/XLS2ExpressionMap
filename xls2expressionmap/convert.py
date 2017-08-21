@@ -56,12 +56,15 @@ class XLS2ExpressionMap:
             group    = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_GROUP )
 
             # Must be required values to generate
-            if name == None or artiType == None:
+            if name == None or artiType == None or group == None:
                 continue
 
+            # "group" xml value is zero origin
+            group = group - 1
+
             print( "[Articulation] {name}, Type={type}, Group={group}".format(
-                name = name,
-                type = artiType,
+                name  = name,
+                type  = artiType,
                 group = group
             ))
 
@@ -128,6 +131,12 @@ class XLS2ExpressionMap:
             articulation    = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_ARTICULATION )
             color           = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_COLOR )
             group           = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_GROUP )
+
+            if group == None:
+                group = 0
+            else:
+                # "group" xml value is zero origin
+                group = group - 1
 
             print( "[Slot] {name}".format( name = name ) )
 

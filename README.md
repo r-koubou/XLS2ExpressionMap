@@ -1,6 +1,9 @@
-## Excel file to Cubase Expression map file converter
+## Spreadsheet to Cubase Expression map file converter
 
-Easy create a Cubase Exression map file (*.expressionmap)
+- Provides the advanced management for Articulations and Keyswitches on spreadsheet
+- Easy convert to Cubase Exression map file (*.expressionmap)
+
+![](https://github.com/r-koubou/XLS2ExpressionMap/wiki/assets/img/software_image.png)
 
 ### Usage
 

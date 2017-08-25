@@ -1,4 +1,4 @@
-# encoding: utf-8
+# coding: utf-8
 
 import platform
 from cx_Freeze import setup, Executable

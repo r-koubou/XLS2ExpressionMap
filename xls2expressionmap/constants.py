@@ -1,4 +1,4 @@
-# encoding: utf-8
+# coding: utf-8
 
 # Header Cell Names
 COLUMN_NAME                 = "Name"

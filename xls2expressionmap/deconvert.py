@@ -1,4 +1,4 @@
-# encoding: utf-8
+# coding: utf-8
 
 # Convert from Cubase expression map data to csv format for XLS2ExpressionMap
 

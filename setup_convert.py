@@ -17,7 +17,7 @@ exe = Executable(
 )
 
 setup( name = 'XLS2ExpressionMap',
-       version     = '0.1.0',
+       version     = '0.5.1',
        author      = AUTHOR,
        description = 'Excel file(*.xlsx) to Cubase Expression Map file converter',
        url         = 'https://github.com/r-koubou/XLS2ExpressionMap',

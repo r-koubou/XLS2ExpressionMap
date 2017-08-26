@@ -20,7 +20,7 @@ class MIDICc:
         self.ccValue = ccValue
 
     def valid( self ):
-        return self.ccNo >= 1 and self.ccValue >= 0
+        return self.ccNo >= 0 and self.ccValue >= 0
 
 """
 MIDI PC information

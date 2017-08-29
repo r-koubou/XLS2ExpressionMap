@@ -1,6 +1,13 @@
 # coding: utf-8
 
+import os
 from os import path
+
+LOGGING = False
+
+if( LOGGING == False ):
+    os.environ[ "KIVY_NO_FILELOG" ]    = "1"
+    os.environ[ "KIVY_NO_CONSOLELOG" ] = "1"
 
 #-------------------
 # 3rd party modules
@@ -21,6 +28,8 @@ WINDOW_H = 480
 Window.minimum_width = WINDOW_W
 Window.minimum_height = WINDOW_H
 Window.size = ( WINDOW_W, WINDOW_H )
+
+Config.set( "kivy", "log_enable", "0" )
 
 """
 GUI Main window class

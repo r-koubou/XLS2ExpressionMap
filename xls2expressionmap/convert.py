@@ -6,6 +6,7 @@
 import os
 import sys
 import html
+from os import path
 
 #-------------------
 # 3rd party modules
@@ -261,6 +262,7 @@ class XLS2ExpressionMap:
 
             expressionMapName = sheetName
             outputFileName    = expressionMapName + ".expressionmap"
+            outputFileName    = path.join( self.outputDir, outputFileName )
             xmlText  = template.XML_HEADER.format( name = expressionMapName )
             xmlText += self.generateArticulation( sheet )
             xmlText += self.generateKeySwitch( sheet )

@@ -32,6 +32,7 @@ options_bdist_mac = {
 
 options_bdist_dmg = {
     "volume_label": "XLS2ExpressionMap",
+    "applications_shortcut": True,
 }
 
 exe = Executable(

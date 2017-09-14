@@ -5,10 +5,10 @@ WORKDIR=build
 DMG_DISKID=disk4
 
 depend:
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt
 
 convert:
-	python setup_convert_gui.py bdist_mac
+	python3 setup_convert_gui.py bdist_mac
 
 dmg: convert
 	$(eval APP := $(shell ls ./build/ | grep app))
@@ -27,7 +27,7 @@ dmg: convert
 	hdiutil convert -format UDZO -o $(WORKDIR)/$(VOL).dmg $(WORKDIR)/src.dmg
 
 deconvert:
-	python setup_deconvert.py build
+	python3 setup_deconvert.py build
 
 none:
 	@echo none: Nothing to do.

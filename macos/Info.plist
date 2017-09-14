@@ -9,6 +9,6 @@
 	<key>CFBundleIconFile</key>
 	<string>icon.icns</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.10</string>
+	<string>10.9.0</string>
 </dict>
 </plist>

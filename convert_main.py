@@ -14,7 +14,8 @@ def usage():
   2017 (c) R-Koubou
 ---------------------
 usage:
-    python XLS2ExpressionMap.py <input file>
+    * Require Python 3.x
+    python XLS2ExpressionMap.py <input file> [<input file>] ...
     <input file>: xlsx file path
         """
     )
@@ -24,8 +25,12 @@ def main():
         usage()
         return
 
-    p = convert.XLS2ExpressionMap( xlsxFileName = sys.argv[ 1 ] )
-    p.convert()
+    for i in sys.argv[1:]:
+        print( "#------------------------------------------" )
+        print( "# {i}".format( i = i ) )
+        print( "#------------------------------------------" )
+        p = convert.XLS2ExpressionMap( xlsxFileName = i )
+        p.convert()
 
 if __name__ == '__main__':
     main()

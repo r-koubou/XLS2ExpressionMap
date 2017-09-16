@@ -33,10 +33,13 @@ class XLS2ExpressionMap:
     """
     ctor
     """
-    def __init__( self, xlsxFileName, outputDir = '.' ):
+    def __init__( self, xlsxFileName, outputDir = None ):
         self.xlsxFileName = xlsxFileName
         self.book         = openpyxl.load_workbook( filename = xlsxFileName, read_only = True )
-        self.outputDir    = outputDir
+        if outputDir != None:
+            self.outputDir = os.path.dirname( outputDir )
+        else:
+            self.outputDir = "."
 
 
     """

@@ -12,7 +12,8 @@ def usage():
   2017 (c) R-Koubou
 ---------------------
 usage:
-    python ExpressionMap2Text.py <input file>
+    * Require Python 3.x
+    python ExpressionMap2Text.py <input file> [<input file>] ...
     <input file>: expression map file path
         """
     )
@@ -22,8 +23,12 @@ def main():
         usage()
         return
 
-    p = deconvert.ExpressionMap2Text( sys.argv[1] )
-    p.deconvert()
+    for i in sys.argv[1:]:
+        print( "#------------------------------------------" )
+        print( "# {i}".format( i = i ) )
+        print( "#------------------------------------------" )
+        p = deconvert.ExpressionMap2Text( i )
+        p.deconvert()
 
 if __name__ == '__main__':
     main()

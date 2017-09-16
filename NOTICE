@@ -2,15 +2,7 @@ This software depends following libraries to work.
 See also requiments.txt.
 
 #-------------------------------------------------------------------------------
-# python 3.6.x
-#-------------------------------------------------------------------------------
-https://www.python.org/
-
-#-------------------------------------------------------------------------------
 # openpyxl
 #-------------------------------------------------------------------------------
 openpyxl is a Python library to read/write Excel 2010 xlsx/xlsm/xltx/xltm files.
 https://pypi.python.org/pypi/openpyxl
-
-An installation example:
-$ pip install openpyxl

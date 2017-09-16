@@ -1,13 +1,13 @@
 .DEFAULT_GOAL := none
 
 depend:
-	pip install -r requirements.txt
+	pip3 install -r requirements.txt
 
 convert:
-	python setup_convert.py build
+	python3 setup_convert.py build
 
 deconvert:
-	python setup_deconvert.py build
+	python3 setup_deconvert.py build
 
 none:
 	@echo none: Nothing to do.

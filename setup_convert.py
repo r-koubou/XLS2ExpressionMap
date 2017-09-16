@@ -3,7 +3,7 @@
 import platform
 from cx_Freeze import setup, Executable
 
-AUTHOR = 'R-Koubou'
+import setup_common
 
 executable = "XLS2ExpressionMap"
 if platform.system().lower().startswith( 'win' ):
@@ -12,13 +12,16 @@ if platform.system().lower().startswith( 'win' ):
 exe = Executable(
     script          = 'convert_main.py',
     base            = None,
-    copyright       = AUTHOR,
+    copyright       = setup_common.AUTHOR,
     targetName      = executable
 )
 
 setup( name = 'XLS2ExpressionMap',
-       version     = '0.5.1',
-       author      = AUTHOR,
+       version     = setup_common.VERSION,
+       author      = setup_common.AUTHOR,
        description = 'Excel file(*.xlsx) to Cubase Expression Map file converter',
        url         = 'https://github.com/r-koubou/XLS2ExpressionMap',
+       options     = {
+           "build_exe": setup_common.options
+       },
        executables = [exe] )

@@ -1,13 +1,10 @@
 # coding: utf-8
 
-import platform
 from cx_Freeze import setup, Executable
 
 AUTHOR = 'R-Koubou'
 
 executable = "XLS2ExpressionMap"
-if platform.system().lower().startswith( 'win' ):
-    executable += ".exe"
 
 exe = Executable(
     script          = 'convert_main.py',

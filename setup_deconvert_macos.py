@@ -1,13 +1,8 @@
 # coding: utf-8
 
-import platform
 from cx_Freeze import setup, Executable
 
 AUTHOR = 'R-Koubou'
-
-executable = "ExpressionMap2Text"
-if platform.system().lower().startswith( 'win' ):
-    executable += ".exe"
 
 exe = Executable(
     script          = 'deconvert_main.py',

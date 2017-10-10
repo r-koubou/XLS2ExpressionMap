@@ -6,13 +6,13 @@
 .PHONY: all
 
 convert_gui:
-	pyinstaller win32/convert_gui_main_win32.spec
+	python3 setup_convert_gui_macos.py bdist_mac
 
 convert_cli:
-	pyinstaller win32/convert_cli_main_win32.spec
+	python3 setup_convert_cli_macos.py build
 
 deconvert:
-	pyinstaller win32/deconvert_main_win32.spec
+	python3 setup_deconvert_macos.py build
 
 all: convert_gui convert_cli deconvert
 	@echo;

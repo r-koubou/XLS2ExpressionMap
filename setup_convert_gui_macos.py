@@ -1,6 +1,5 @@
 # coding: utf-8
 
-import platform
 from cx_Freeze import setup, Executable
 
 APP_NAME = "XLS2ExpressionMap"
@@ -8,10 +7,6 @@ AUTHOR   = 'R-Koubou'
 VERSION  = "0.5.1"
 
 executable = APP_NAME
-base       = None
-if platform.system().lower().startswith( 'win' ):
-    executable += ".exe"
-    base        = "Win32GUI"
 
 options = {
     "include_files":[
@@ -32,7 +27,7 @@ options_bdist_mac = {
 
 exe = Executable(
     script          = 'convert_gui_main.py',
-    base            = base,
+    base            = None,
     copyright       = AUTHOR,
     targetName      = executable,
 )

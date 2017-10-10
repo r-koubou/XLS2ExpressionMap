@@ -1,0 +1,19 @@
+.DEFAULT_GOAL := all
+
+.PHONY: convert_gui
+.PHONY: convert_cli
+.PHONY: deconvert
+.PHONY: clean
+.PHONY: all
+
+convert_gui:
+	pyinstaller win32/convert_gui_main_win32.spec
+
+convert_cli:
+	pyinstaller win32/convert_cli_main_win32.spec
+
+deconvert:
+	pyinstaller win32/deconvert_main_win32.spec
+
+all: convert_gui convert_cli deconvert
+	@echo;

@@ -30,11 +30,6 @@ options_bdist_mac = {
     "iconfile":          "macos/icon.icns",
 }
 
-options_bdist_dmg = {
-    "volume_label": "XLS2ExpressionMap",
-    "applications_shortcut": True,
-}
-
 exe = Executable(
     script          = 'convert_gui_main.py',
     base            = base,
@@ -50,6 +45,5 @@ setup( name        = APP_NAME,
        options     = {
            "build_exe": options,
            "bdist_mac": options_bdist_mac,
-           "bdist_dmg": options_bdist_dmg,
        },
        executables = [exe] )

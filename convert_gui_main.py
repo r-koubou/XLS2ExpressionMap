@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import threading
 import os
 from os import path
 
@@ -43,7 +44,8 @@ class ConvertGUIApp( App ):
         super( ConvertGUIApp, self ).__init__( **kvargs )
         self.title = "XLS2ExpressionMap GUI"
         self.message_label = properties.ObjectProperty( None )
-        self.inputFilePath = ""
+        self.converter = None
+        self.finished  = False
 
     def build( self ):
         Window.bind( on_dropfile = self.onDropFile )
@@ -52,21 +54,65 @@ class ConvertGUIApp( App ):
     def onDropFile( self, window, filePath ):
         self.inputFilePath = filePath.decode()
         message = self.root.ids[ "message_label" ]
-        message.text = ""
-        clock.Clock.schedule_once( self.execConvert, 0 )
 
-    def execConvert( self, deltaTime ):
-        message   = self.root.ids[ "message_label" ]
-        if( self.inputFilePath.endswith( ".xlsx" ) ):
-            outputDir      = path.dirname( self.inputFilePath )
+        if( self.converter != None and self.converter.is_alive() ):
+            return
+
+        self.finished  = False
+        self.converter = ConvertThread( xlsxFilePath=self.inputFilePath, callback=self.onConvertFinished )
+        self.converter.start()
+
+        message.text = "Processing..."
+        clock.Clock.schedule_interval( self.onConvertProgress, 0.05 )
+
+    def onConvertProgress( self, deltaTime ):
+        message = self.root.ids[ "progress_label" ]
+        if( self.finished == True ):
+            message.text = ""
+            return
+        if( len( message.text ) > 16 ):
+            message.text = ""
+
+        message.text = message.text + "-"
+        return self.finished != True
+
+    def onConvertFinished( self ):
+        self.finished   = True
+        message         = self.root.ids[ "message_label" ]
+        progressMessage = self.root.ids[ "progress_label" ]
+        progressMessage.text = ""
+        if( self.converter.result == True ):
+            message.text   = "Done!"
+        else:
+            message.text   = "Error!"
+
+"""
+Convert processing outside UI thread
+"""
+class ConvertThread( threading.Thread ):
+
+    """
+    ctor.
+    """
+    def __init__( self, xlsxFilePath, callback=None ):
+        super( ConvertThread, self ).__init__()
+        self.xlsxFilePath   = xlsxFilePath
+        self.result         = False
+        self.callback       = callback
+
+    def run( self ):
+        if( self.xlsxFilePath.endswith( ".xlsx" ) ):
+            outputDir = path.dirname( self.xlsxFilePath )
             try:
-                conv = convert.XLS2ExpressionMap( xlsxFileName = self.inputFilePath, outputDir = outputDir )
+                conv = convert.XLS2ExpressionMap( xlsxFileName = self.xlsxFilePath, outputDir = outputDir )
                 conv.convert()
-                message.text   = "Done!"
+                self.result = True
             except:
-                message.text = "Error!"
+                self.result = False
+            finally:
+                if( self.callback != None ):
+                    self.callback()
 
-        return False
 
 if __name__ == '__main__':
     ConvertGUIApp().run()

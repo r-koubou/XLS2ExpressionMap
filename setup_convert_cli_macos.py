@@ -6,6 +6,14 @@ AUTHOR = 'R-Koubou'
 
 executable = "XLS2ExpressionMap"
 
+options = {
+    "include_files":[
+        ( "LICENSE", "LICENSE" ),
+        ( "NOTICE", "NOTICE" ),
+    ],
+    "excludes": [ "tkinter" ]
+}
+
 exe = Executable(
     script          = 'convert_main.py',
     base            = None,
@@ -18,4 +26,7 @@ setup( name = 'XLS2ExpressionMap',
        author      = AUTHOR,
        description = 'Excel file(*.xlsx) to Cubase Expression Map file converter',
        url         = 'https://github.com/r-koubou/XLS2ExpressionMap',
+       options     = {
+           "build_exe": options,
+       },
        executables = [exe] )

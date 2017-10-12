@@ -3,7 +3,6 @@
 .PHONY: convert_gui
 .PHONY: convert_cli
 .PHONY: deconvert
-.PHONY: all
 
 convert_gui:
 	python3 setup_convert_gui_macos.py bdist_mac
@@ -13,6 +12,3 @@ convert_cli:
 
 deconvert:
 	python3 setup_deconvert_macos.py build
-
-all: convert_gui convert_cli deconvert
-	@echo;

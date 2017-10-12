@@ -4,6 +4,16 @@ from cx_Freeze import setup, Executable
 
 AUTHOR = 'R-Koubou'
 
+executable = "ExpressionMap2Text"
+
+options = {
+    "include_files":[
+        ( "LICENSE", "LICENSE" ),
+        ( "NOTICE", "NOTICE" ),
+    ],
+    "excludes": [ "tkinter" ]
+}
+
 exe = Executable(
     script          = 'deconvert_main.py',
     base            = None,
@@ -11,9 +21,12 @@ exe = Executable(
     targetName      = executable
 )
 
-setup( name = 'XLS2ExpressionMap',
+setup( name = 'ExpressionMap2Text',
        version     = '0.5.1',
        author      = AUTHOR,
        description = 'Cubase Expression Map file to tab separated text converter',
        url         = 'https://github.com/r-koubou/XLS2ExpressionMap',
+       options     = {
+           "build_exe": options,
+       },
        executables = [exe] )

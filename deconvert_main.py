@@ -3,6 +3,8 @@
 # Convert from Cubase expression map data to csv format for XLS2ExpressionMap
 
 import sys
+from os import path
+
 from xls2expressionmap import deconvert
 
 def usage():
@@ -12,7 +14,7 @@ def usage():
   2017 (c) R-Koubou
 ---------------------
 usage:
-    python ExpressionMap2Text.py <input file>
+    python ExpressionMap2Text.py <input file> [input file] ...
     <input file>: expression map file path
         """
     )
@@ -22,8 +24,11 @@ def main():
         usage()
         return
 
-    p = deconvert.ExpressionMap2Text( sys.argv[1] )
-    p.deconvert()
+    for i in sys.argv[1:]:
+        print( "{i}".format( i = i ) )
+        outputDir = path.dirname( i )
+        p = deconvert.ExpressionMap2Text( sourceFileName=i, outputDir=outputDir )
+        p.deconvert()
 
 if __name__ == '__main__':
     main()

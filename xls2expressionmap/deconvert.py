@@ -3,6 +3,7 @@
 # Convert from Cubase expression map data to csv format for XLS2ExpressionMap
 
 import os
+from os import path
 import html
 
 from xml.etree import ElementTree
@@ -19,8 +20,9 @@ class ExpressionMap2Text:
     """
     ctor.
     """
-    def __init__( self, sourceFileName ):
+    def __init__( self, sourceFileName, outputDir = '.' ):
         self.sourceFileName = sourceFileName
+        self.outputDir  = outputDir
         self.xmlTree    = ElementTree.parse( sourceFileName )
         self.xmlRoot    = self.xmlTree.getroot()
         self.slot       = self.xmlRoot.find( "member[@name='slots']" )
@@ -50,7 +52,8 @@ class ExpressionMap2Text:
 
         outputText = outputText.encode( "utf8" )
 
-        fp = open( self.sourceFileName + ".txt", "wb" )
+        outputFileName  = path.join( self.outputDir, self.sourceFileName + ".txt" )
+        fp = open( outputFileName, "wb" )
         fp.write( outputText )
         fp.close()
 

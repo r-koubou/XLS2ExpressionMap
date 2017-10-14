@@ -1,9 +1,19 @@
 .DEFAULT_GOAL := all
 
+.PHONY: clean
 .PHONY: convert_gui
 .PHONY: convert_cli
 .PHONY: deconvert
 .PHONY: all
+
+PREFIX=XLS2ExpressionMap
+BUILD_DIR=build\\
+DIST_DIR=dist\\
+WORK_DIR=$(DIST_DIR)\\_
+
+clean:
+	cmd /C if exist $(BUILD_DIR) rd /q /s $(BUILD_DIR)
+	cmd /C if exist $(DIST_DIR) rd /q /s $(DIST_DIR)
 
 convert_gui:
 	pyinstaller win32/convert_gui_main_win32.spec
@@ -15,4 +25,17 @@ deconvert:
 	pyinstaller win32/deconvert_main_win32.spec
 
 all: convert_gui convert_cli deconvert
-	@echo;
+	python appinfo.py>VERSION.txt
+	cmd /C mkdir $(WORK_DIR)
+	cmd /C move VERSION.txt $(WORK_DIR)\\
+	cmd /C move dist\\XLS2ExpressionMap $(WORK_DIR)\\
+	cmd /C move dist\\XLS2ExpressionMap-CLI $(WORK_DIR)\\
+	cmd /C move dist\\ExpressionMap2Text $(WORK_DIR)\\
+
+	cmd /C copy README.html $(WORK_DIR)\\
+	cmd /C copy LICENSE $(WORK_DIR)\\
+	cmd /C copy NOTICE $(WORK_DIR)\\
+	cmd /C copy Template.xlsx $(WORK_DIR)\\
+
+	cmd /C ren $(WORK_DIR) $(PREFIX)
+	@echo Done.

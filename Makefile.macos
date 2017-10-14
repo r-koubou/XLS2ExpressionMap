@@ -40,6 +40,9 @@ deconvert:
 	mv ./build/$(DECONVERT_PREFIX)/ $(DEST_ROOT)/
 
 all: clean convert_gui convert_cli deconvert
+	python appinfo.py>VERSION.txt
+	mv ./VERSION.txt $(DEST_ROOT)/
+	cp ./README.html $(DEST_ROOT)/
 	cp ./Template.xlsx $(DEST_ROOT)/
 	cp ./LICENSE $(DEST_ROOT)/
 	cp ./NOTICE $(DEST_ROOT)/

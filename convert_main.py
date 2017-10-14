@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import appinfo
 from os import path
 import sys
 
@@ -10,15 +11,18 @@ from xls2expressionmap.xlsx import xlsutil
 
 def usage():
     print(
-"""---------------------
-  XLS2ExpressionMap
-  2017 (c) R-Koubou
----------------------
+"""
+XLS2ExpressionMap {version}
+
+2017 (c) {author}
+{url}
+
 usage:
-    * Require Python 3.x
-    python XLS2ExpressionMap.py <input file> [<input file>] ...
+    XLS2ExpressionMap <input file> [<input file>] ...
+
+    [parameter]
     <input file>: xlsx file path
-        """
+""".format( version=appinfo.VERSION, author=appinfo.AUTHOR, url=appinfo.URL )
     )
 
 def main():

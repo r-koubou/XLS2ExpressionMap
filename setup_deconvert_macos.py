@@ -1,10 +1,10 @@
 # coding: utf-8
 
+import appinfo
 from cx_Freeze import setup, Executable
 
-AUTHOR = 'R-Koubou'
-
-executable = "ExpressionMap2Text"
+APP_NAME   = "ExpressionMap2Text"
+executable = APP_NAME
 
 options = {
     "include_files":[
@@ -17,15 +17,15 @@ options = {
 exe = Executable(
     script          = 'deconvert_main.py',
     base            = None,
-    copyright       = AUTHOR,
+    copyright       = appinfo.AUTHOR,
     targetName      = executable
 )
 
-setup( name = 'ExpressionMap2Text',
+setup( name        = 'ExpressionMap2Text',
        version     = '0.5.1',
-       author      = AUTHOR,
+       author      = appinfo.AUTHOR,
        description = 'Cubase Expression Map file to tab separated text converter',
-       url         = 'https://github.com/r-koubou/XLS2ExpressionMap',
+       url         = appinfo.URL,
        options     = {
            "build_exe": options,
        },

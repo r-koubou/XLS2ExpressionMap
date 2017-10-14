@@ -3,12 +3,45 @@
 .PHONY: convert_gui
 .PHONY: convert_cli
 .PHONY: deconvert
+.PHONY: clean
+.PHONY: all
+
+PREFIX=XLS2ExpressionMap
+CLI_PREFIX=XLS2ExpressionMap-CLI
+DECONVERT_PREFIX=ExpressionMap2Text
+
+DEST_ROOT=./build/$(PREFIX)
+GUI_ROOT=$(DEST_ROOT)/$(PREFIX)
+CLI_ROOT=$(DEST_ROOT)/$(CLI_PREFIX)
+DECONVERT_ROOT=$(DEST_ROOT)/$(DECONVERT_PREFIX)
+
+clean:
+	rm -fr ./build/
+	mkdir -p $(DEST_ROOT)
 
 convert_gui:
 	python3 setup_convert_gui_macos.py bdist_mac
+	mkdir -p $(DEST_ROOT)
+	mv ./build/XLS2ExpressionMap.app $(DEST_ROOT)/XLS2ExpressionMap.app
+	rm -fr ./build/exe.macosx-*/
 
 convert_cli:
+	rm -fr $(CLI_ROOT)
+	mkdir -p $(CLI_ROOT)
 	python3 setup_convert_cli_macos.py build
+	mv ./build/exe.macosx-*/ ./build/$(CLI_PREFIX)
+	mv ./build/$(CLI_PREFIX) $(DEST_ROOT)/
 
 deconvert:
+	rm -fr $(DECONVERT_ROOT)/
+	mkdir -p $(DECONVERT_ROOT)/
 	python3 setup_deconvert_macos.py build
+	mv ./build/exe.macosx-*/ ./build/$(DECONVERT_PREFIX)/
+	mv ./build/$(DECONVERT_PREFIX)/ $(DEST_ROOT)/
+
+all: clean convert_gui convert_cli deconvert
+	cp ./Template.xlsx $(DEST_ROOT)/
+	cp ./LICENSE $(DEST_ROOT)/
+	cp ./NOTICE $(DEST_ROOT)/
+	tar cvfz ./build/$(PREFIX)-macos.tar.gz -C ./build/ $(PREFIX)/
+	@echo Done.

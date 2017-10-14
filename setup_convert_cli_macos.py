@@ -1,10 +1,10 @@
 # coding: utf-8
 
+import appinfo
 from cx_Freeze import setup, Executable
 
-AUTHOR = 'R-Koubou'
-
-executable = "XLS2ExpressionMap"
+APP_NAME   = "XLS2ExpressionMap"
+executable = APP_NAME
 
 options = {
     "include_files":[
@@ -17,15 +17,15 @@ options = {
 exe = Executable(
     script          = 'convert_main.py',
     base            = None,
-    copyright       = AUTHOR,
+    copyright       = appinfo.AUTHOR,
     targetName      = executable
 )
 
-setup( name = 'XLS2ExpressionMap',
-       version     = '0.5.1',
-       author      = AUTHOR,
+setup( name        = APP_NAME,
+       version     = appinfo.VERSION,
+       author      = appinfo.AUTHOR,
        description = 'Excel file(*.xlsx) to Cubase Expression Map file converter',
-       url         = 'https://github.com/r-koubou/XLS2ExpressionMap',
+       url         = appinfo.URL,
        options     = {
            "build_exe": options,
        },

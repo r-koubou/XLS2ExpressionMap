@@ -1,7 +1,7 @@
 # coding: utf-8
 
 # Convert from Cubase expression map data to csv format for XLS2ExpressionMap
-
+import appinfo
 import sys
 from os import path
 
@@ -9,14 +9,16 @@ from xls2expressionmap import deconvert
 
 def usage():
     print(
-"""---------------------
-  ExpressionMap2Text
-  2017 (c) R-Koubou
----------------------
+"""
+ExpressionMap2Text {version}
+
+2017 (c) {author}
+{url}
+
 usage:
-    python ExpressionMap2Text.py <input file> [input file] ...
+    ExpressionMap2Text <input file> [input file] ...
     <input file>: expression map file path
-        """
+""".format( version=appinfo.VERSION, author=appinfo.AUTHOR, url=appinfo.URL )
     )
 
 def main():

@@ -1,0 +1,5 @@
+openpyxl
+setuptools
+cx_Freeze
+cython==0.26
+kivy

@@ -1,3 +1,0 @@
-openpyxl
-setuptools
-cx_Freeze

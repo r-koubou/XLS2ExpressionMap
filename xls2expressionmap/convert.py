@@ -3,7 +3,6 @@
 #-------------------
 # built in modules
 #-------------------
-import os
 import sys
 import html
 from os import path
@@ -37,7 +36,7 @@ class XLS2ExpressionMap:
         self.xlsxFileName = xlsxFileName
         self.book         = openpyxl.load_workbook( filename = xlsxFileName, read_only = True )
         if outputDir != None:
-            self.outputDir = os.path.dirname( outputDir )
+            self.outputDir = outputDir
         else:
             self.outputDir = "."
 

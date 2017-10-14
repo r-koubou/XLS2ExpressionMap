@@ -1,8 +1,20 @@
 This software depends following libraries to work.
-See also requiments.txt.
+
+#-------------------------------------------------------------------------------
+# python 3
+#-------------------------------------------------------------------------------
+If run as python script, install Python 3.4 or higher and modules.
+https://www.python.org/
 
 #-------------------------------------------------------------------------------
 # openpyxl
 #-------------------------------------------------------------------------------
 openpyxl is a Python library to read/write Excel 2010 xlsx/xlsm/xltx/xltm files.
 https://pypi.python.org/pypi/openpyxl
+
+#-------------------------------------------------------------------------------
+# kivy
+#-------------------------------------------------------------------------------
+Kivy - Open source Python library for rapid development of applications
+that make use of innovative user interfaces, such as multi-touch apps.
+https://kivy.org

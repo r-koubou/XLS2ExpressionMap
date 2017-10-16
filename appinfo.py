@@ -1,7 +1,7 @@
 # coding: utf-8
 
 AUTHOR  = 'R-Koubou'
-VERSION = '0.6.0'
+VERSION = '0.6.1'
 URL     = 'https://github.com/r-koubou/XLS2ExpressionMap'
 
 VERSION_NUMBER = 0x006000

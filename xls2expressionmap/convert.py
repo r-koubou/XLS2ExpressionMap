@@ -44,19 +44,19 @@ class XLS2ExpressionMap:
     """
     Generate articulation xml string from given sheet
     """
-    def generateArticulation( self, sheet ):
+    def generateArticulation( self, sheet, rows ):
 
         ret = template.ARTICULATION_HEADER
 
         for rowIndex in range( constants.START_ROW_INEDX, sheet.max_row ):
 
-            name = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_ARTICULATION )
+            name = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_ARTICULATION )
 
             if name == None:
                 break
 
-            artiType = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_ARTICULATION_TYPE )
-            group    = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_GROUP )
+            artiType = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_ARTICULATION_TYPE )
+            group    = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_GROUP )
 
             # Must be required values to generate
             if name == None or artiType == None or group == None:
@@ -121,19 +121,19 @@ class XLS2ExpressionMap:
     """
     Generate key switch xml string from given sheet
     """
-    def generateKeySwitch( self, sheet ):
+    def generateKeySwitch( self, sheet, rows ):
 
         ret = template.KEY_SWITCH_HEADER
 
         for rowIndex in range( constants.START_ROW_INEDX, sheet.max_row ):
 
-            name = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_NAME )
+            name = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_NAME )
             if name == None:
                 break
 
-            articulation    = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_ARTICULATION )
-            color           = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_COLOR )
-            group           = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_GROUP )
+            articulation    = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_ARTICULATION )
+            color           = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_COLOR )
+            group           = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_GROUP )
 
             if group == None:
                 group = 0
@@ -163,8 +163,8 @@ class XLS2ExpressionMap:
             #   Velocity1 ... Velocity1+n
             midiNoteList = []
             for i in range( 1, INT_MAX ):
-                noteNo = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_NOTE + str( i ) )
-                vel    = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_VELOCITY + str( i ) )
+                noteNo = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_MIDI_NOTE + str( i ) )
+                vel    = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_MIDI_VELOCITY + str( i ) )
                 if noteNo == None or vel == None:
                     break
 
@@ -182,8 +182,8 @@ class XLS2ExpressionMap:
             #   CC Value1 ... CC Value1+n
             ccList = []
             for i in range( 1, INT_MAX ):
-                ccNo    = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_CC + str( i ) )
-                ccValue = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_CC_VALUE + str( i ) )
+                ccNo    = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_MIDI_CC + str( i ) )
+                ccValue = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_MIDI_CC_VALUE + str( i ) )
                 if ccNo == None or ccValue == None:
                     break
 
@@ -198,8 +198,8 @@ class XLS2ExpressionMap:
             #   PC MSB1 ... PC MSB1+n (MSB not exist, MSB value will be 0 )
             programChangeList = []
             for i in range( 1, INT_MAX ):
-                lsb = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_PC_LSB + str( i ) )
-                msb = xlsutil.getValueFromColumnName( sheet, rowIndex, constants.COLUMN_MIDI_PC_MSB + str( i ) )
+                lsb = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_MIDI_PC_LSB + str( i ) )
+                msb = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_MIDI_PC_MSB + str( i ) )
 
                 if lsb == None:
                     break
@@ -257,7 +257,7 @@ class XLS2ExpressionMap:
 
             xmlText = ''
             sheet   = self.book[ sheetName ]
-
+            rows    = [x for x in sheet.rows] # Tuple [row][column]
             # Ignore sheet
             if sheetName == constants.LIST_DEFINITION_SHEETNAME:
                 continue
@@ -266,8 +266,8 @@ class XLS2ExpressionMap:
             outputFileName    = expressionMapName + ".expressionmap"
             outputFileName    = path.join( self.outputDir, outputFileName )
             xmlText  = template.XML_HEADER.format( name = expressionMapName )
-            xmlText += self.generateArticulation( sheet )
-            xmlText += self.generateKeySwitch( sheet )
+            xmlText += self.generateArticulation( sheet, rows )
+            xmlText += self.generateKeySwitch( sheet, rows )
             xmlText += template.XML_FOOTER
 
             xmlText = xmlText.encode( 'utf8' )

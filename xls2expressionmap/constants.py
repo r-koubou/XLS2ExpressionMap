@@ -17,8 +17,9 @@ COLUMN_MIDI_PC_MSB          = "PC MSB"
 # List definition sheet name
 LIST_DEFINITION_SHEETNAME   = "DO NOT MODIFY!"
 
-# Start of data entry row index (1==header)
-START_ROW_INEDX             = 2
+# Start of data entry row index (0==header)
+HEADER_ROW_INEDX            = 0
+START_ROW_INEDX             = 1
 
 #
 # in sheet "DO NOT MODIFY!"

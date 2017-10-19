@@ -253,26 +253,28 @@ class XLS2ExpressionMap:
     Convert to Expression map file
     """
     def convert( self ):
-        for sheetName in self.book.sheetnames:
+        try:
+            for sheetName in self.book.sheetnames:
 
-            xmlText = ''
-            sheet   = self.book[ sheetName ]
-            rows    = [x for x in sheet.rows] # Tuple [row][column]
-            # Ignore sheet
-            if sheetName == constants.LIST_DEFINITION_SHEETNAME:
-                continue
+                xmlText = ''
+                sheet   = self.book[ sheetName ]
+                rows    = [x for x in sheet.rows] # Tuple [row][column]
+                # Ignore sheet
+                if sheetName == constants.LIST_DEFINITION_SHEETNAME:
+                    continue
 
-            expressionMapName = sheetName
-            outputFileName    = expressionMapName + ".expressionmap"
-            outputFileName    = path.join( self.outputDir, outputFileName )
-            xmlText  = template.XML_HEADER.format( name = expressionMapName )
-            xmlText += self.generateArticulation( sheet, rows )
-            xmlText += self.generateKeySwitch( sheet, rows )
-            xmlText += template.XML_FOOTER
+                expressionMapName = sheetName
+                outputFileName    = expressionMapName + ".expressionmap"
+                outputFileName    = path.join( self.outputDir, outputFileName )
+                xmlText  = template.XML_HEADER.format( name = expressionMapName )
+                xmlText += self.generateArticulation( sheet, rows )
+                xmlText += self.generateKeySwitch( sheet, rows )
+                xmlText += template.XML_FOOTER
 
-            xmlText = xmlText.encode( 'utf8' )
+                xmlText = xmlText.encode( 'utf8' )
 
-            fp = open( outputFileName, "wb" )
-            fp.write( xmlText )
-            fp.close()
-
+                fp = open( outputFileName, "wb" )
+                fp.write( xmlText )
+                fp.close()
+        finally:
+            self.book.close()

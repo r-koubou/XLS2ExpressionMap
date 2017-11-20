@@ -1,5 +1,5 @@
 openpyxl
 setuptools
-cx_Freeze
+cx_Freeze==5.0.2
 cython==0.26
 kivy

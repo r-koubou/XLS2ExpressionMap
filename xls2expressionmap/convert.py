@@ -148,7 +148,7 @@ class XLS2ExpressionMap:
                 tmp = ""
                 tmp += template.ARTICULATION_IN_SLOT_HEADER
                 tmp += template.ARTICULATION_IN_SLOT.format(
-                    uuid1 = util.createUUID(), name = articulation,
+                    uuid1 = util.createUUID(), name = html.escape( articulation ),
                     group = group
                 )
                 tmp += template.ARTICULATION_IN_SLOT_FOOTER

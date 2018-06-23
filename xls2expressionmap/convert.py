@@ -145,11 +145,15 @@ class XLS2ExpressionMap:
 
             # Append articulation
             if len( articulation ) > 0:
+                artiType = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_ARTICULATION_TYPE )
+                artiType = constants.ARTICULATION_TYPE.index( artiType ) # to integer format ( 0: Attribute 1: Direction).
                 tmp = ""
                 tmp += template.ARTICULATION_IN_SLOT_HEADER
                 tmp += template.ARTICULATION_IN_SLOT.format(
-                    uuid1 = util.createUUID(), name = html.escape( articulation ),
-                    group = group
+                    uuid1               = util.createUUID(),
+                    articulationtype    = artiType,
+                    name = html.escape( articulation ),
+                    group               = group,
                 )
                 tmp += template.ARTICULATION_IN_SLOT_FOOTER
                 articulation = tmp
@@ -233,6 +237,27 @@ class XLS2ExpressionMap:
             else:
                 midiMessageXml = template.EMPTY_MIDI_MESSAGE_IN_KEYSWITCH
 
+            # Append key xml node
+            #
+            #                <int name="key{i}" value="{note}"/>
+            #
+            keyXml = ""
+            if len( midiNoteList ) == 0:
+                keyXml = "               <int name=\"key\" value=\"-1\"/>"
+            else:
+                for index, i in enumerate( midiNoteList ):
+                    if index >= 1:
+                        keyXml += template.KEY_SWITCH_NOTE_VALUE.format(
+                            keyindex    = str( index - 1 ),
+                            note        = i.noteNo
+                        )
+                    else:
+                        keyXml += template.KEY_SWITCH_NOTE_VALUE.format(
+                            keyindex    = "",
+                            note        = i.noteNo
+                        )
+
+                    keyXml += "\n"
 
             # Generate Keyswitch XML text
             ret += template.KEY_SWITCH.format(
@@ -243,6 +268,7 @@ class XLS2ExpressionMap:
                 midimessage = midiMessageXml,
                 name  = html.escape( name ),
                 color = color,
+                keynote_values = keyXml,
                 articulations = articulation
             )
 

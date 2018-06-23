@@ -24,6 +24,8 @@ KEY_SWITCH_HEADER = """
       <int name="ownership" value="1"/>
       <list name="obj" type="obj">"""
 
+KEY_SWITCH_NOTE_VALUE = """               <int name="key{keyindex}" value="{note}"/>"""
+
 KEY_SWITCH = """
          <obj class="PSoundSlot" ID="{uuid1}">
             <obj class="PSlotThruTrigger" name="remote" ID="{uuid2}">
@@ -56,7 +58,8 @@ KEY_SWITCH = """
                <int name="transpose" value="0"/>
                <int name="maxPitch" value="127"/>
                <int name="minPitch" value="0"/>
-               <int name="key" value="0"/>
+
+{keynote_values}
             </obj>
 {articulations}
             <member name="name">
@@ -99,7 +102,7 @@ ARTICULATION_IN_SLOT_HEADER = """            <member name="sv">
 
 ARTICULATION_IN_SLOT = """                  <obj class="USlotVisuals" ID="{uuid1}">
                      <int name="displaytype" value="1"/>
-                     <int name="articulationtype" value="1"/>
+                     <int name="articulationtype" value="{articulationtype}"/>
                      <int name="symbol" value="73"/>
                      <string name="text" value="{name}" wide="true"/>
                      <string name="description" value="{name}" wide="true"/>

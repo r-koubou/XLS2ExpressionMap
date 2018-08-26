@@ -46,9 +46,10 @@ class XLS2ExpressionMap:
     """
     def generateArticulation( self, sheet, rows ):
 
-        ret = template.ARTICULATION_HEADER
+        ret             = template.ARTICULATION_HEADER
+        START_ROW_INEDX = xlsutil.getRowIndexCompat( rows )[ 1 ]
 
-        for rowIndex in range( constants.START_ROW_INEDX, sheet.max_row ):
+        for rowIndex in range( START_ROW_INEDX, sheet.max_row ):
 
             name = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_ARTICULATION )
 
@@ -123,9 +124,10 @@ class XLS2ExpressionMap:
     """
     def generateKeySwitch( self, sheet, rows ):
 
-        ret = template.KEY_SWITCH_HEADER
+        ret             = template.KEY_SWITCH_HEADER
+        START_ROW_INEDX = xlsutil.getRowIndexCompat( rows )[ 1 ]
 
-        for rowIndex in range( constants.START_ROW_INEDX, sheet.max_row ):
+        for rowIndex in range( START_ROW_INEDX, sheet.max_row ):
 
             name = xlsutil.getValueFromColumnName( rows, rowIndex, constants.COLUMN_NAME )
             if name == None:
@@ -289,9 +291,32 @@ class XLS2ExpressionMap:
                 if sheetName == constants.LIST_DEFINITION_SHEETNAME:
                     continue
 
+                # Since: 0.7
+                # Sheet Name's Max length is 32...
+                # If A1 is "Output Name" and B1 is <Valid File Name>
+                # outputFileName will be assigned instead of sheet's name
+
+                # V0.6.x mode
                 expressionMapName = sheetName
                 outputFileName    = expressionMapName + ".expressionmap"
                 outputFileName    = path.join( self.outputDir, outputFileName )
+
+                # V0.7 later mode
+                a0 = rows[ 0 ][ 0 ].value
+                b0 = rows[ 0 ][ 1 ].value
+                if a0 == constants.COLUMN_OUTPUTNAME:
+                    b0 = str( b0 )
+                    expressionMapName = b0
+                    outputFileName    = expressionMapName + ".expressionmap"
+                    outputFileName    = path.join( self.outputDir, outputFileName )
+                # Switching to V0.6 mode
+                else:
+                    print( "----------------------------------------------------------------" )
+                    print( "Run as V0.6 mode" )
+                    print( "Warning: Please use spreadsheet version 0.7 or later format." )
+                    print( "In the future, this compatibility will be removed." )
+                    print( "----------------------------------------------------------------" )
+
                 xmlText  = template.XML_HEADER.format( name = expressionMapName )
                 xmlText += self.generateArticulation( sheet, rows )
                 xmlText += self.generateKeySwitch( sheet, rows )

@@ -1,5 +1,8 @@
 # coding: utf-8
 
+# Output Filename field since V0.7
+COLUMN_OUTPUTNAME           = "Expression Map Name"
+
 # Header Cell Names
 COLUMN_NAME                 = "Name"
 COLUMN_COLOR                = "Color"
@@ -17,9 +20,13 @@ COLUMN_MIDI_PC_MSB          = "PC MSB"
 # List definition sheet name
 LIST_DEFINITION_SHEETNAME   = "DO NOT MODIFY!"
 
-# Start of data entry row index (0==header)
-HEADER_ROW_INEDX            = 0
-START_ROW_INEDX             = 1
+# Start of data entry row index (ver0.6: 0==header, ver0.7: 1==header)
+__HEADER_ROW_OUTPUTNAME       = 0
+__HEADER_ROW_INEDX            = 2
+__START_ROW_INEDX             = 3
+# V0.6
+__HEADER_ROW_INEDX_V6         = 0
+__START_ROW_INEDX_V6          = 1
 
 #
 # in sheet "DO NOT MODIFY!"

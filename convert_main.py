@@ -30,6 +30,12 @@ def main():
         usage()
         return
 
+    # Checking: xlsx files exist
+    for i in sys.argv[1:]:
+        if( path.exists( i ) == False ):
+            usage()
+            return
+
     for i in sys.argv[1:]:
         print( "#------------------------------------------" )
         print( "# {i}".format( i = i ) )

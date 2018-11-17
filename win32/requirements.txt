@@ -1,11 +1,1 @@
 openpyxl
-wheel
-setuptools
-pypiwin32
-pyinstaller
-cython==0.26
-docutils
-pygments
-kivy.deps.sdl2
-kivy.deps.glew
-kivy

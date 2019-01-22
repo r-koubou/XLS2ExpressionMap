@@ -22,6 +22,7 @@ class ExpressionMap2Text:
     """
     def __init__( self, sourceFileName, outputDir = '.' ):
         self.sourceFileName = sourceFileName
+        self.sourceName     = path.splitext( path.basename( sourceFileName ) )[0]
         self.outputDir  = outputDir
         self.xmlTree    = ElementTree.parse( sourceFileName )
         self.xmlRoot    = self.xmlTree.getroot()
@@ -43,7 +44,8 @@ class ExpressionMap2Text:
         #         :
         #         :
         #         </obj>
-        outputText = ""
+        outputText = "{mapname}\n".format( mapname=self.sourceName)
+
         for i in self.slot.findall( "list/obj[@class='PSoundSlot']" ):
             p = column.Columns()
             self.parseArticulationInfo( p, i )
@@ -73,7 +75,7 @@ class ExpressionMap2Text:
         row.color             = color.get( "value" )
         row.articulationName  = row.name
         row.articulationType  = constants.ARTICULATION_TYPE[ int( articulationType.get("value") ) ]
-        row.group             = int( group.get( "value" ) )
+        row.group             = int( group.get( "value" ) ) + 1 # 1 origin for editing
 
         # MIDI Event
         # <obj class="PSoundSlot" ID="*****">
